@@ -57,7 +57,47 @@ class TextLearning:
 
         
 
+class HoursLearning:
+    def gather(self, done_tasks, today):
+        self.tasks_per_day = dict()
+        for t in done_tasks:
+            val = self.tasks_per_day.setdefault(t.scheduled_timestamp.date(), [])
+            val.append(t)
+        #if today in self.tasks_per_day:
+        self.tasks_per_day.pop(today, None)
 
+    def summarize(self):
+        """Returns the ideal time to work per day
+        Exploration is assumed to work naturally"""
+        ideal_time = timedelta()
+        total_tasks = 0
+
+        for d in self.tasks_per_day:
+            time_spent = timedelta()
+            for t in self.tasks_per_day[d]:
+                time_spent += t.time_spent
+            n_tasks = len(self.tasks_per_day[d])
+
+            ideal_time += time_spent * n_tasks
+            total_tasks += n_tasks
+        
+        return (ideal_time, total_tasks)
+
+    def recommend(self, today, current, done_tasks):
+        self.gather(done_tasks, today)
+        ideal_duration, sample_size = self.summarize()
+        if sample_size == 0:
+            return current
+        
+        ideal_duration = ideal_duration/sample_size
+        in_noise_area = (current - ideal_duration) < timedelta(hours=1) and (current - ideal_duration) > timedelta()
+
+        if in_noise_area:
+            return current
+        else:
+            return current * 0.80 + ideal_duration * 0.20
+
+            
         
 
 

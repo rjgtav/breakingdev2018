@@ -1,7 +1,7 @@
 from datetime import time, date, datetime, timedelta
 
 from task import Task
-from learning import TextLearning
+from learning import TextLearning, HoursLearning
 
 def timeDifference(a, b):
     dateTimeA = datetime.combine(date.today(), a)
@@ -27,6 +27,13 @@ class User:
 
         self.setDaysSchedule()
         self.text_predictor = TextLearning()
+        self.hour_predictor = HoursLearning()
+        self.last_hours_update = None
+
+    def update_hours(self, today):
+        if today != self.last_hours_update:
+            self.work_hours = self.hour_predictor.recommend(today, self.work_hours, self.done_tasks)
+            self.last_hours_update = today
 
     ####################### tasks_per_day ######################
     def addTaskToDaysSchedule(self, task):
@@ -126,9 +133,9 @@ class User:
                 t.deadline = now
 
         add = sorted(self.tasks_to_add)
-        print("Priority")
-        print(add)
-        print("Priority")
+        #print("Priority")
+        #print(add)
+        #print("Priority")
         self.setDaysSchedule()
         
         if add_today:
@@ -235,6 +242,8 @@ class User:
         task.id = self.task_id_seed
         self.task_id_seed += 1
         task.set_prediction(self.text_predictor.predict(task))
+
+        self.update_hours(today)
 
         tasks = self.softResetFuture(today)
         self.schedule(now, tasks_to_add=tasks+[task])
