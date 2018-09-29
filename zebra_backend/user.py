@@ -10,8 +10,8 @@ def timeDifference(a, b):
     return dateTimeA - dateTimeB
 
 class User:
-    def __init__(self, name, email):
-        self.id = 0
+    def __init__(self, id, name, email):
+        self.id = 1
         self.tasks = []
         self.done_tasks = []
         #Info
@@ -123,8 +123,6 @@ class User:
         adds one task, doesn't take from today, respects prefered after
         Can be used to add new task and postpone task
         """
-        #FUODO Check for unfeasible tasks (too long)
-
         today = now.date()
 
         for t in self.tasks_to_add:

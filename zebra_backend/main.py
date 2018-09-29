@@ -24,6 +24,9 @@ class DatabaseClass:
     def __init__(self):
         self.users = dict()
 
+    def addUser(self, user):
+        self.users[user.id] = user
+
     def getUser(self, key):
         if not key in self.users:
             return None
@@ -32,6 +35,9 @@ class DatabaseClass:
 
 db = DatabaseClass()
 
+
+#Dummy data:
+User(1, "Zebra", "zebra@zebroide.zeb")
 
 ############################################################
 
