@@ -10,29 +10,10 @@ from datetime import time, date, datetime, timedelta
 
 from task import Task
 from user import User
+from calendar import IcalCalendar
 
 app = Flask(__name__)
 CORS(app)
-
-#from icalevents.icalevents import events
-class IcalCalendar:
-    def __init__(self, url):
-        self.url = url
-        self.refreshed = None
-    
-    def refresh(self, now):
-        if not self.refreshed or self.refreshed + timedelta(days=1) < now:
-            self.es = events(self.url)
-    
-    def get_busy_times(self, day):
-        res = []
-        for ev in self.es:
-            if ev.start.day() == day:
-                res.append((ev.start.time(), ev.end.time()))
-        return res
-
-
-    
 
 class DatabaseClass:
     def __init__(self):
@@ -171,6 +152,39 @@ def postpone_task():
         print ("WARNING: user not found")
 
     return ''
+
+#=====================ICAL===============================
+@app.route('/cals/get/', methods=['POST'])
+def get_cals():
+    input = json.loads(request.data)
+    user = db.getUser(input['user'])
+    if user:
+        calendars = user.getCalendars()
+        return json.dumps([ c.url for c in calendars], indent=4, sort_keys=True, default=str)
+    else:
+        print ("WARNING: user not found")
+        return ""
+
+@app.route('/cals/add/', methods=['POST'])
+def add_cal():
+    input = json.loads(request.data)
+    user = db.getUser(input['user'])
+    if user:
+        user.addCalendar(input['url'])
+    else:
+        print ("WARNING: user not found")
+    return ""
+
+@app.route('/cals/del/', methods=['POST'])
+def del_cal():
+    input = json.loads(request.data)
+    user = db.getUser(input['user'])
+    if user:
+        user.delCalendar(input['url'])
+    else:
+        print ("WARNING: user not found")
+    return ""
+
 
 if __name__ == '__main__':
     app.run(host = "127.0.0.1", port = 8080, debug = True)

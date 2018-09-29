@@ -2,6 +2,7 @@ from datetime import time, date, datetime, timedelta
 
 from task import Task
 from learning import TextLearning, HoursLearning
+from calendar import IcalCalendar 
 
 def timeDifference(a, b):
     dateTimeA = datetime.combine(date.today(), a)
@@ -14,6 +15,8 @@ class User:
         self.id = 1
         self.tasks = []
         self.done_tasks = []
+
+        self.cals = []
         #Info
         self.name = name
         self.email = email
@@ -325,3 +328,18 @@ class User:
         #try to schedule today
         #normal schedule
         pass
+
+    #######################################################3
+
+    def getCalendars(self):
+        return self.cals
+
+    def addCalendar(self, url):
+        self.cals.append(IcalCalendar(url))
+
+    def delCalendar(self, url):
+        for c in self.cals:
+            if c.url == url:
+                self.cals.remove(c)
+                return True
+        return False
