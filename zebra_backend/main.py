@@ -61,7 +61,8 @@ def add_task():
     input = json.loads(request.data)
     user = db.getUser(input['user'])
     if user:
-        duration = datetime.combine(date.today(), time.fromisoformat(input['duration']))  - datetime.combine(date.today(), time())
+        duraton_time = datetime.strptime(input['duration'], "%Y-%m-%dT%H:%M:%S.000Z").time()
+        duration = datetime.combine(date.today(), duraton_time)  - datetime.combine(date.today(), time())
         #deadline = datetime.strptime("2007-03-04T21:08:12", "%Y-%m-%dT%H:%M:%S")
         if input['deadline']:
             deadline = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S")
@@ -78,7 +79,8 @@ def edit_task():
     user = db.getUser(input['user'])
     if user:
         task_id = int(input['task_id'])
-        duration = datetime.combine(date.today(), time.fromisoformat(input['duration']))  - datetime.combine(date.today(), time())
+        duraton_time = datetime.strptime(input['duration'], "%Y-%m-%dT%H:%M:%S.000Z").time()
+        duration = datetime.combine(date.today(), duraton_time)  - datetime.combine(date.today(), time())
         #deadline = datetime.strptime("2007-03-04T21:08:12", "%Y-%m-%dT%H:%M:%S")
         if input['deadline']:
             deadline = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S")
