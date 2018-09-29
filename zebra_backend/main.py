@@ -14,7 +14,7 @@ from user import User
 app = Flask(__name__)
 CORS(app)
 
-from icalevents.icalevents import events
+#from icalevents.icalevents import events
 class IcalCalendar:
     def __init__(self, url):
         self.url = url
@@ -77,15 +77,17 @@ def add_task():
     if user:
         duraton_time = datetime.strptime(input['duration'], "%Y-%m-%dT%H:%M:%S.000Z").time()
         duration = datetime.combine(date.today(), duraton_time)  - datetime.combine(date.today(), time())
-        #deadline = datetime.strptime("2007-03-04T21:08:12", "%Y-%m-%dT%H:%M:%S")
+        #deadline = datetime.strptime("2007-03-04T21:08:12", "%Y-%m-%dT%H:%M:%S.000Z")
         if input['deadline']:
-            deadline = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S")
+            deadline = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S.000Z")
         else:
             deadline = None
         task = Task(input['name'], duration, deadline, input['notes'])
         user.add_task(task, datetime.now())
     else:
         print ("WARNING: user not found")
+
+    return ''
 
 @app.route('/edit/', methods=['POST'])
 def edit_task():
@@ -95,15 +97,17 @@ def edit_task():
         task_id = int(input['task_id'])
         duraton_time = datetime.strptime(input['duration'], "%Y-%m-%dT%H:%M:%S.000Z").time()
         duration = datetime.combine(date.today(), duraton_time)  - datetime.combine(date.today(), time())
-        #deadline = datetime.strptime("2007-03-04T21:08:12", "%Y-%m-%dT%H:%M:%S")
+        #deadline = datetime.strptime("2007-03-04T21:08:12", "%Y-%m-%dT%H:%M:%S.000Z")
         if input['deadline']:
-            deadline = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S")
+            deadline = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S.000Z")
         else:
             deadline = None
-        schedule = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S")
+        schedule = datetime.strptime(input['schedule'], "%Y-%m-%dT%H:%M:%S.000Z")
         user.edit_task(task_id, input['name'], duration, deadline, input['notes'], schedule, datetime.now())
     else:
         print ("WARNING: user not found")
+
+    return ''
 
 @app.route('/delete/', methods=['POST'])
 def delete_task():
