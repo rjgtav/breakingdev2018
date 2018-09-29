@@ -20,6 +20,7 @@ class Task:
     
     def getDict(self):
         return {
+            "id": self.id,
             "name": self.name,
             "duration": self.duration,
             "deadline": self.deadline,
