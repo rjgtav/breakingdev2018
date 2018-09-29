@@ -1,0 +1,33 @@
+<!-- Navigation -->
+<div class="row text-white" style="margin-top: 128px; margin-bottom: 1rem;">
+  <div class="d-flex flex-row justify-content-center w-100">
+    <fa-icon class="mr-2 ml-2" style="font-size: 2rem"
+             [icon]="faCheck"
+             [style.opacity]="tab == ZebraTodoListTab.COMPLETED ? 1 : 0.5"
+             (click)="onTabClick(ZebraTodoListTab.COMPLETED)"></fa-icon>
+    <fa-icon class="mr-2 ml-2" style="font-size: 2rem"
+             [icon]="faCalendarAlt"
+             [style.opacity]="tab == ZebraTodoListTab.TODAY ? 1 : 0.5"
+             (click)="onTabClick(ZebraTodoListTab.TODAY)"></fa-icon>
+    <fa-icon class="mr-2 ml-2" style="font-size: 2rem"
+             [icon]="faClock"
+             [style.opacity]="tab == ZebraTodoListTab.SCHEDULED ? 1 : 0.5"
+             (click)="onTabClick(ZebraTodoListTab.SCHEDULED)"></fa-icon>
+  </div>
+  <div class="font-weight-bold text-center text-uppercase w-100">{{ tab }}</div>
+</div>
+
+<!-- List -->
+<div class="col">
+  <div *ngFor="let task of tasksByTab[tab]; let i = index" class="row position-relative bg-white pl-3 pr-3 align-items-center" style="height: 3rem">
+    <fa-icon class="mr-3"
+             [icon]="task.Complete ? faCheckCircle : faCircle" style="font-size: 120%"
+             [ngClass]="{ 'text-success': task.Complete }"></fa-icon>
+    <span style="line-height: 1">
+      <span>{{ task.Name }}</span><br/>
+      <small class="text-muted">{{ task.TimeStartInMinutes | time }} ~ {{ task.TimeEndInMinutes | time }}</small>
+    </span>
+    <span *ngIf="i < tasksByTab[tab].length - 1"
+          class="position-absolute border-bottom" style="width: calc(100% - 2rem); bottom: 0"></span>
+  </div>
+</div>

@@ -1,0 +1,127 @@
+<owl-date-time [pickerMode]="'dialog'" #DueDate></owl-date-time>
+<owl-date-time [pickerMode]="'dialog'" [pickerType]="'timer'" #Duration></owl-date-time>
+<owl-date-time [pickerMode]="'dialog'" #Scheduled></owl-date-time>
+
+<!-- Back -->
+<div class="col position-absolute text-white" style="top: 0.5rem; width: auto;">
+  <div class="row align-items-center">
+    <fa-icon class="mr-2" style="font-size: 2rem" [icon]="faChevronLeft"></fa-icon>
+    <span>Back</span>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="row text-white" style="margin-top: 128px; margin-bottom: 1rem;">
+  <div class="d-flex flex-row justify-content-center w-100">
+    <fa-icon style="font-size: 2rem" [icon]="isNew ? faPlus : faPencilAlt"></fa-icon>
+  </div>
+  <div class="font-weight-bold text-center text-uppercase w-100">{{ isNew ? 'New' : 'Edit'}} Task</div>
+</div>
+
+<div class="col">
+  <!-- Completed & Name -->
+  <div class="row position-relative align-items-center bg-white pl-3 pr-3" style="height: 3rem">
+    <fa-icon class="mr-3"
+             [icon]="task.Complete ? faCheckCircle : faCircle" style="font-size: 120%"
+             [ngClass]="{ 'text-success': task.Complete }"
+             [style.opacity]="!isNew ? 1 : 0.5"></fa-icon>
+    <input class="flex-grow-1 border-0" [(ngModel)]="task.Name" placeholder="Buy milk" type="text" />
+  </div>
+
+  <!-- Duration -->
+  <div class="row position-relative align-items-center bg-white pl-3 pr-3 mt-2" style="height: 3rem"
+       [owlDateTimeTrigger]="Duration">
+    <input [owlDateTime]="Duration" [(ngModel)]="task.Duration" type="hidden">
+
+    <fa-icon class="mr-3"
+             [icon]="faStopwatch" style="font-size: 120%"
+             [style.opacity]="task.DurationInMinutes ? 1 : 0.5"></fa-icon>
+
+    <span *ngIf="!task.DurationInMinutes" style="opacity: 0.5">Duration</span>
+    <span *ngIf="task.DurationInMinutes" style="line-height: 1">{{ task.DurationInMinutes | time }}</span>
+
+    <span class="position-absolute border-bottom" style="width: calc(100% - 2rem); bottom: 0"></span>
+
+  </div>
+
+  <!-- Due Date -->
+  <div class="row position-relative align-items-center bg-white pl-3 pr-3" style="height: 3rem"
+       [owlDateTimeTrigger]="DueDate">
+    <input [owlDateTime]="DueDate" [(ngModel)]="task.Deadline" type="hidden">
+
+    <fa-icon class="mr-3"
+             [icon]="faCalendarAlt" style="font-size: 120%"
+             [style.opacity]="task.DeadlineInMinutes ? 1 : 0.5"></fa-icon>
+
+    <span *ngIf="!task.DeadlineInMinutes" style="opacity: 0.5">Due date</span>
+    <span *ngIf="task.DeadlineInMinutes" style="line-height: 1">
+      <span>Due {{ task.DeadlineInMinutes | date }}</span><br/>
+      <small class="text-muted">{{ task.DeadlineInMinutes | time }}</small>
+    </span>
+
+    <span *ngIf="!isNew" class="position-absolute border-bottom" style="width: calc(100% - 2rem); bottom: 0"></span>
+  </div>
+
+  <!-- Scheduled -->
+  <div *ngIf="!isNew" class="row position-relative align-items-center bg-white pl-3 pr-3" style="height: 3rem"
+       [owlDateTimeTrigger]="Scheduled">
+    <input [owlDateTime]="Scheduled" [(ngModel)]="task.Scheduled" type="hidden">
+
+    <fa-icon class="mr-3"
+             [icon]="faClock" style="font-size: 120%"
+             [style.opacity]="task.ScheduledInMinutes ? 1 : 0.5"></fa-icon>
+
+    <span *ngIf="!task.ScheduledInMinutes" style="opacity: 0.5">Scheduled date</span>
+    <span *ngIf="task.ScheduledInMinutes" style="line-height: 1">
+      <span>Scheduled for {{ task.Scheduled | date }}</span><br/>
+      <small class="text-muted">{{ task.ScheduledInMinutes | time }}</small>
+    </span>
+
+    <span *ngIf="!isNew" class="position-absolute border-bottom" style="width: calc(100% - 2rem); bottom: 0"></span>
+  </div>
+
+  <!-- Actions -->
+  <div *ngIf="!isNew" class="row position-relative align-items-center bg-white text-primary pl-3 pr-3 mt-2" style="height: 4rem">
+    <div class="col text-center" style="opacity: 0.75">
+      <fa-icon [icon]="faCalendarTimes" style="font-size: 120%"
+               [ngClass]="{ 'text-success': task.Complete }"></fa-icon><br/>
+      <span>Postpone</span>
+    </div>
+
+    <div class="col text-center" style="opacity: 0.75">
+      <fa-icon [icon]="faExchangeAlt" style="font-size: 120%"
+               [ngClass]="{ 'text-success': task.Complete }"></fa-icon><br/>
+      <span>Replace</span>
+    </div>
+
+    <div class="col text-center" style="opacity: 0.75">
+      <fa-icon [icon]="faCalendarPlus" style="font-size: 120%"
+               [ngClass]="{ 'text-success': task.Complete }"></fa-icon><br/>
+      <span>Today</span>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="row position-relative bg-white p-3 mt-2" style="height: 9rem; margin-bottom: 4rem">
+    <textarea class="border-0 p-0 w-100 h-100" placeholder="Add a note" [(ngModel)]="task.Notes"></textarea>
+  </div>
+
+</div>
+
+<!-- Delete/Save button -->
+<div class="col position-fixed mb-3" style="bottom: 0">
+  <div class="row align-items-center bg-white w-100" style="height: 3rem;">
+    <div class="col text-center text-primary" style="opacity: 0.75;">
+      <fa-icon class="mr-3"
+               [icon]="faSave" style="font-size: 120%"
+               [ngClass]="{ 'text-success': task.Complete }"></fa-icon>
+      <span>Save</span>
+    </div>
+    <div *ngIf="!isNew" class="col text-danger text-center">
+      <fa-icon class="mr-3"
+               [icon]="faTrashAlt" style="font-size: 120%"
+               [ngClass]="{ 'text-success': task.Complete }"></fa-icon>
+      <span>Delete</span>
+    </div>
+  </div>
+</div>
