@@ -46,7 +46,7 @@ def get_tasks():
     user = db.getUser(input.user)
     if user:
         past, future = user.get_schedule()
-        return json.dumps([ [t.json() for t in past], [t.json() for t in future]], indent=4, sort_keys=True, default=str)
+        return json.dumps([ [t.getDict() for t in past], [t.getDict() for t in future]], indent=4, sort_keys=True, default=str)
     else:
         print ("WARNING: user not found")
 

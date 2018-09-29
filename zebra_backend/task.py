@@ -18,6 +18,16 @@ class Task:
         #after
         self.time_spent = None #timedelta
     
+    def getDict(self):
+        return {
+            "name": self.name,
+            "duration": self.duration,
+            "deadline": self.deadline,
+            "notes": self.notes,
+            "done": self.done,
+            "scheduled": self.scheduled_timestamp
+        }
+    
     def __repr__(self):
         return self.__str__()
     def __str__(self):
