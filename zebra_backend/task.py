@@ -40,6 +40,11 @@ class Task:
         self.done = True
         self.time_spent = time_spent
     
+    def uncomplete(self):
+        self.done = False
+        self.time_spent = None
+
+
     def edit(self, name, duration, deadline, notes, scheduled_timestamp):
         self.name = name #string
         self.duration = duration #timedelta

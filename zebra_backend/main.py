@@ -105,6 +105,16 @@ def complete_task():
     else:
         print ("WARNING: user not found")
 
+@app.route('/uncomplete/', methods=['POST'])
+def uncomplete_task():
+    input = json.loads(request.data)
+    user = db.getUser(input.user)
+    if user:
+        task_id = int(input.task_id)
+        user.uncomplete_task(task_id, datetime.now())
+    else:
+        print ("WARNING: user not found")
+
 if __name__ == '__main__':
     app.run(host = "127.0.0.1", port = 8080, debug = True)
 

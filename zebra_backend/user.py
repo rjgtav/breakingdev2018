@@ -282,5 +282,17 @@ class User:
     def postpone_task(self, task_id):
         pass
 
-    def uncomplete_task(self, task_id):
+    def do_today(self, task_id):
         pass
+
+    def uncomplete_task(self, task_id, now):
+        today = now.date()
+        t = self.find_done(task_id)
+        if t:
+            t.uncomplete()
+            self.done_tasks.remove(t)
+            tasks = self.softResetFuture(today)
+            self.schedule(now, tasks_to_add=tasks+[t])
+        else:
+            print("ERROR: Tried to uncomplete task that doesn't exist in task list")
+        
