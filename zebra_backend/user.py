@@ -40,8 +40,11 @@ class User:
         for t in self.done_tasks:
             self.addTaskToDaysSchedule(t)
 
-    def dayIsFull(self, day):
+    def dayIsFull(self, day, respect_prefered):
         #FUODO take calendar into account
+        if respect_prefered and day.weekday() >= 5: #Is weekend
+            return True
+
         tasks = self.tasks_per_day.setdefault(day, [])
         total_duration = timedelta()
         for d in [t.duration for t in tasks]:
@@ -134,9 +137,7 @@ class User:
             day = today + timedelta(days=1)
         while add:
             spaces = self.getDaySpace(day, now)
-            #print(spaces)
-            #print(add)
-            while not self.dayIsFull(day) and add: #do while some task fits in some space
+            while not self.dayIsFull(day, respect_prefered) and add: #do while some task fits in some space
                 task = None
                 for (start, end) in spaces:
                     task = self.auxGetFittingTask(start, end, day, add, respect_prefered)
