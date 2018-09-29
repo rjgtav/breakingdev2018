@@ -21,7 +21,7 @@ class Task:
     def __repr__(self):
         return self.__str__()
     def __str__(self):
-        return "Task: " + ("V" if self.done else "O")  + " " + self.name + " " + str(self.duration) + " until " + str(self.deadline) + " ||Scheduled for: " + str(self.scheduled_timestamp)
+        return "Task"+ ("*" if self.user_scheduled else "") +str(self.id)+": " + ("V" if self.done else "O")  + " " + self.name + " " + str(self.duration) + " until " + str(self.deadline) + " ||Scheduled for: " + str(self.scheduled_timestamp)
 
     def __lt__(self, other): # self < other
         #FOR NON SCHEDULED ONLY

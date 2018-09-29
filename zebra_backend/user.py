@@ -79,8 +79,8 @@ class User:
             spaces = self.auxRemoveSpaces(spaces, start, end)
         # Remove space for scheduled tasks
         for t in tasks:
-            start = t.scheduled_timestamp
-            end = t.scheduled_timestamp + t.duration
+            start = t.scheduled_timestamp.time()
+            end = (t.scheduled_timestamp + t.duration).time()
             spaces = self.auxRemoveSpaces(spaces, start, end)
         return spaces
 
@@ -103,7 +103,8 @@ class User:
     def unscheduleTask(self, task):
         """Used to roll back a schedule. MUST be followed a setDaysSchedule (eventually)""" #Yes, bad desing, i know
         task.scheduled_timestamp = None
-        self.tasks.remove(task)
+        if task in self.tasks:
+            self.tasks.remove(task)
 
     def conservativeSchedule(self, now, add_today = True, respect_prefered=False):
         """
@@ -120,6 +121,9 @@ class User:
                 t.deadline = now
 
         add = sorted(self.tasks_to_add)
+        print("Priority")
+        print(add)
+        print("Priority")
         self.setDaysSchedule()
         
         if add_today:
@@ -128,8 +132,8 @@ class User:
             day = today + timedelta(days=1)
         while add:
             spaces = self.getDaySpace(day, now)
-            print(spaces)
-            print(add)
+            #print(spaces)
+            #print(add)
             while not self.dayIsFull(day) and add: #do while some task fits in some space
                 task = None
                 for (start, end) in spaces:
@@ -140,7 +144,8 @@ class User:
                     break
                 elif not task.deadline or task.deadline > datetime.combine(day, end):
                     #add this fitting task
-                    self.auxRemoveSpaces(spaces, start, (datetime.combine(day,start)+task.duration).time() )
+                    print("Adding task")
+                    spaces = self.auxRemoveSpaces(spaces, start, (datetime.combine(day,start)+task.duration).time() )
                     self.scheduleTask(task, datetime.combine(day,start))
                     add.remove(task)
                 else:
@@ -149,7 +154,7 @@ class User:
                     for t in self.tasks_to_add:
                         self.unscheduleTask(t)
                     return False 
-            today += timedelta(days=1)
+            day += timedelta(days=1)
         #Can fail. use non conservative in that case
         return True
     
@@ -196,10 +201,10 @@ class User:
             return True
         else:
             #Can't add the new tasks respecting constraints!
-            self.softResetScheduling()
+            self.tasks_to_add += self.softResetScheduling()
             if self.conservativeSchedule(now, add_today=True, respect_prefered=False):
                 return True
-            self.hardResetScheduling()
+            self.tasks_to_add += self.hardResetScheduling()
             if self.conservativeSchedule(now, add_today=True, respect_prefered=False):
                 return True
             else:
@@ -234,7 +239,7 @@ class User:
     
     def edit_task(self, task_id, name, duration, deadline, notes, schedule, now):
         today = now.date()
-        task = self.find_done(task_id)
+        task = self.find_task(task_id)
         if task:
             needs_reschedule = duration > task.duration or deadline < task.deadline or schedule != task.scheduled_timestamp
             
@@ -242,7 +247,8 @@ class User:
 
             if needs_reschedule:
                 tasks = self.softResetFuture(today)
-                self.schedule(now, tasks_to_add=tasks)
+                self.unscheduleTask(task)
+                self.schedule(now, tasks_to_add=tasks+[task])
         else:
             print("ERROR: did not find edited task")
     
