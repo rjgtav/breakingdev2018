@@ -10,7 +10,7 @@ class TextLearning:
     def register_task(self, task):
         """register complete task"""
         words = set(task.name.split())
-        ratio = task.time_spent.seconds /task.duration.seconds
+        ratio = task.time_spent.second / task.duration.seconds
 
         for word in words:
             self.register_word(word, ratio)

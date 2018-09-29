@@ -119,6 +119,8 @@ def delete_task():
     else:
         print ("WARNING: user not found")
 
+    return ''
+
 
 @app.route('/complete/', methods=['POST'])
 def complete_task():
@@ -126,10 +128,12 @@ def complete_task():
     user = db.getUser(input['user'])
     if user:
         task_id = int(input['task_id'])
-        time_taken = time.fromisoformat(input['time_taken'])
+        time_taken = datetime.strptime(input['time_taken'], "%Y-%m-%dT%H:%M:%S.000Z")
         user.complete_task(task_id, time_taken)
     else:
         print ("WARNING: user not found")
+
+    return ''
 
 @app.route('/uncomplete/', methods=['POST'])
 def uncomplete_task():
@@ -140,6 +144,8 @@ def uncomplete_task():
         user.uncomplete_task(task_id, datetime.now())
     else:
         print ("WARNING: user not found")
+
+    return ''
 
 
 @app.route('/switch/', methods=['POST'])
@@ -152,6 +158,8 @@ def switch_task():
     else:
         print ("WARNING: user not found")
 
+    return ''
+
 @app.route('/postpone/', methods=['POST'])
 def postpone_task():
     input = json.loads(request.data)
@@ -161,6 +169,8 @@ def postpone_task():
         user.postpone_task(task_id, datetime.now())
     else:
         print ("WARNING: user not found")
+
+    return ''
 
 if __name__ == '__main__':
     app.run(host = "127.0.0.1", port = 8080, debug = True)

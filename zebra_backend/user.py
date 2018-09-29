@@ -130,7 +130,7 @@ class User:
                 print ("ERROR: deadline before today: moving to today")
                 t.deadline = now
 
-        add = sorted(self.tasks_to_add)
+        add = sorted(set(self.tasks_to_add))
         #print("Priority")
         #print(add)
         #print("Priority")
