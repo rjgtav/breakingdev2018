@@ -85,11 +85,11 @@ class User:
         return spaces
 
     ######################### scheduler ########################
-    def auxGetFittingTask(self, start, end, add, respect_prefered):
+    def auxGetFittingTask(self, start, end, day, add, respect_prefered):
         space_duration = timeDifference(end, start)
         for t in add:
             if t.duration <= space_duration:
-                if not respect_prefered or (not t.prefered_after or t.prefered_after > end):
+                if not respect_prefered or (not t.prefered_after or t.prefered_after < day):
                     return t
         return None
 
@@ -137,7 +137,7 @@ class User:
             while not self.dayIsFull(day) and add: #do while some task fits in some space
                 task = None
                 for (start, end) in spaces:
-                    task = self.auxGetFittingTask(start, end, add, respect_prefered)
+                    task = self.auxGetFittingTask(start, end, day, add, respect_prefered)
                     if task:
                         break
                 if not task:
@@ -276,14 +276,21 @@ class User:
             print("ERROR: Tried to complete task that doesn't exist in task list")
 
     #1st stretch
-    def switch_task(self, task_id):
-        pass
+    def switch_task(self, task_id, now):
+        return self.postpone_task(task_id, now, switch=True)
     
-    def postpone_task(self, task_id):
-        pass
+    def postpone_task(self, task_id, now, switch = False):
+        today = now.date()
+        t = self.find_task(task_id)
+        if t:
+            t.prefered_after = today
+            tasks = self.softResetFuture(today)
+            self.unscheduleTask(t)
+            self.schedule(now, tasks_to_add=tasks+[t])
 
-    def do_today(self, task_id):
-        pass
+            self.schedule(now, add_today = switch, tasks_to_add = [])
+        else:
+            print("ERROR: Tried to postpone task that doesn't exist in task list")
 
     def uncomplete_task(self, task_id, now):
         today = now.date()
@@ -296,3 +303,12 @@ class User:
         else:
             print("ERROR: Tried to uncomplete task that doesn't exist in task list")
         
+    def do_today(self, task_id):
+        #try to fit today
+            #if ok, done
+        #else
+        #soft reset future
+        #soft reset today
+        #try to schedule today
+        #normal schedule
+        pass

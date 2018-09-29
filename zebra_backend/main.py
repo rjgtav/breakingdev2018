@@ -115,6 +115,27 @@ def uncomplete_task():
     else:
         print ("WARNING: user not found")
 
+
+@app.route('/switch/', methods=['POST'])
+def switch_task():
+    input = json.loads(request.data)
+    user = db.getUser(input.user)
+    if user:
+        task_id = int(input.task_id)
+        user.switch_task(task_id, datetime.now())
+    else:
+        print ("WARNING: user not found")
+
+@app.route('/postpone/', methods=['POST'])
+def postpone_task():
+    input = json.loads(request.data)
+    user = db.getUser(input.user)
+    if user:
+        task_id = int(input.task_id)
+        user.postpone_task(task_id, datetime.now())
+    else:
+        print ("WARNING: user not found")
+
 if __name__ == '__main__':
     app.run(host = "127.0.0.1", port = 8080, debug = True)
 
