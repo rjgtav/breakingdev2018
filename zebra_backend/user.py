@@ -1,6 +1,7 @@
 from datetime import time, date, datetime, timedelta
 
 from task import Task
+from learning import TextLearning
 
 def timeDifference(a, b):
     dateTimeA = datetime.combine(date.today(), a)
@@ -25,6 +26,7 @@ class User:
         self.work_hours = timedelta(hours=6)
 
         self.setDaysSchedule()
+        self.text_predictor = TextLearning()
 
     ####################### tasks_per_day ######################
     def addTaskToDaysSchedule(self, task):
@@ -88,7 +90,7 @@ class User:
     def auxGetFittingTask(self, start, end, day, add, respect_prefered):
         space_duration = timeDifference(end, start)
         for t in add:
-            if t.duration <= space_duration:
+            if t.predicted_duration <= space_duration:
                 if not respect_prefered or (not t.prefered_after or t.prefered_after < day):
                     return t
         return None
@@ -145,7 +147,7 @@ class User:
                 elif not task.deadline or task.deadline > datetime.combine(day, end):
                     #add this fitting task
                     print("Adding task")
-                    spaces = self.auxRemoveSpaces(spaces, start, (datetime.combine(day,start)+task.duration).time() )
+                    spaces = self.auxRemoveSpaces(spaces, start, (datetime.combine(day,start)+task.predicted_duration).time() )
                     self.scheduleTask(task, datetime.combine(day,start))
                     add.remove(task)
                 else:
@@ -231,11 +233,10 @@ class User:
         today = now.date()
         task.id = self.task_id_seed
         self.task_id_seed += 1
+        task.set_prediction(self.text_predictor.predict(task))
 
         tasks = self.softResetFuture(today)
         self.schedule(now, tasks_to_add=tasks+[task])
-
-        #FUODO predict 
     
     def edit_task(self, task_id, name, duration, deadline, notes, schedule, now):
         today = now.date()
@@ -272,6 +273,7 @@ class User:
             self.tasks.remove(t)
             self.done_tasks.append(t)
             t.complete(time_taken)
+            self.text_predictor.register_task(t)
         else:
             print("ERROR: Tried to complete task that doesn't exist in task list")
 
