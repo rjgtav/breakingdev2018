@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-#from flask_cors import CORS
+from flask_cors import CORS
 from datetime import datetime
 import json
 from flask import send_from_directory
@@ -12,7 +12,7 @@ from task import Task
 from user import User
 
 app = Flask(__name__)
-#CORS(app)
+CORS(app)
 
 timestamp = None
 
