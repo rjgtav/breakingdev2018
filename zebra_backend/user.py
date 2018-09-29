@@ -250,14 +250,17 @@ class User:
         today = now.date()
         task = self.find_task(task_id)
         if task:
-            needs_reschedule = duration > task.duration or (not deadline or deadline < task.deadline) or schedule != task.scheduled_timestamp
+            needs_reschedule = duration > task.duration or deadline != task.deadline or schedule != task.scheduled_timestamp
             
             task.edit(name, duration, deadline, notes, schedule)
 
             if needs_reschedule:
                 tasks = self.softResetFuture(today)
-                self.unscheduleTask(task)
-                self.schedule(now, tasks_to_add=tasks+[task])
+                if not task.user_scheduled:
+                    self.unscheduleTask(task)
+                    self.schedule(now, tasks_to_add=tasks+[task])
+                else:
+                    self.schedule(now, tasks_to_add=tasks)
         else:
             print("ERROR: did not find edited task")
     
