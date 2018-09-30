@@ -1,13 +1,21 @@
 <!-- Time Travelling -->
 <div class="col position-fixed w-100" style="top: 0; left: 0">
-  <div class="row">
-    <div *ngIf="timeTravel" class="position-absolute text-center text-white w-100">{{ Today.toString().slice(0, 25) }}</div>
+  <div class="row ml-5 mr-5">
+    <div *ngIf="timeTravel" class="position-absolute text-center text-white">{{ Today.toString().slice(0, 25) }}</div>
     <div class="col pt-2 pb-2"
          (touchstart)="onTimeTravelClick(true, -1)"
          (touchend)="onTimeTravelClick(false, -1)">&nbsp;</div>
     <div class="col pt-2 pb-2"
          (touchstart)="onTimeTravelClick(true, 1)"
          (touchend)="onTimeTravelClick(false, -1)">&nbsp;</div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="col position-fixed text-white" style="top: 0.5rem; right: 0.5rem; width: auto;">
+  <div class="row align-items-center"
+       (click)="onSettingsClick()">
+    <fa-icon class="mr-2" style="font-size: 2rem" [icon]="faCog"></fa-icon>
   </div>
 </div>
 

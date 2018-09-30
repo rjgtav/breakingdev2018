@@ -14,9 +14,19 @@ const STORAGE_LOCAL_ID = 'zebra.account.id';
 })
 export class ZebraService {
 
+  calendars: BehaviorSubject<string[]> = new BehaviorSubject([]);
   tasks: BehaviorSubject<ZebraTask[]> = new BehaviorSubject([]);
 
   constructor(private http: HttpClient) {}
+
+  loadCalendars(): Observable<string[]> {
+    this.requestParameters()
+      .pipe(flatMap(params => this.http
+        .post(BASE_URL + 'cals/get/', params)))
+        .subscribe(value => this.calendars.next(value as string[]));
+
+    return this.calendars.asObservable();
+  }
 
   loadTasks(force?: boolean): Observable<ZebraTask[]> {
     if (force || this.tasks.getValue().length == 0)
@@ -48,6 +58,17 @@ export class ZebraService {
         });
       }
     });
+  }
+
+  calendarAdd(calendar: string): Observable<object> {
+    return this.requestParameters({ url: calendar })
+      .pipe(flatMap(params => this.http
+        .post(BASE_URL + 'cals/add/', params)));
+  }
+  calendarDelete(calendar: string): Observable<object> {
+    return this.requestParameters({ url: calendar })
+      .pipe(flatMap(params => this.http
+        .post(BASE_URL + 'cals/del/', params)));
   }
 
   taskAdd(task: ZebraTask): Observable<object> {

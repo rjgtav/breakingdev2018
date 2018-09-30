@@ -9,6 +9,7 @@ import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule} from "@angular/router";
 import {BrowserModule} from "@angular/platform-browser";
+import { ZebraTodoSettingsComponent } from './zebra-todo-settings/zebra-todo-settings.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import {BrowserModule} from "@angular/platform-browser";
   declarations: [
     ZebraTodoListComponent,
     ZebraTodoAddComponent,
+    ZebraTodoSettingsComponent,
   ]
 })
 export class ZebraTodoModule { }

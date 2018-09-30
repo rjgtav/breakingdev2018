@@ -1,0 +1,42 @@
+<!-- Back -->
+<div class="col position-fixed text-white" style="top: 0.5rem; width: auto;">
+  <div class="row align-items-center"
+       (click)="onBackClick()">
+    <fa-icon class="mr-2" style="font-size: 2rem" [icon]="faChevronLeft"></fa-icon>
+    <span>Back</span>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="row text-white mb-3" style="margin-top: 96px;">
+  <div class="d-flex flex-row justify-content-center w-100">
+    <fa-icon style="font-size: 2rem" [icon]="faCog"></fa-icon>
+  </div>
+  <div class="font-weight-bold text-center text-uppercase w-100">Settings</div>
+</div>
+
+<!-- Add Calendar -->
+<div class="form-row">
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Calendar" [(ngModel)]="calendar" />
+    <div class="input-group-prepend">
+      <button class="btn btn-primary input-group-append" (click)="onSaveClick()">
+        <fa-icon [icon]="faSave"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Calendars -->
+<div class="font-weight-bold text-center text-uppercase text-white w-100 mt-3 mb-3">Calendars</div>
+
+<div *ngFor="let calendar of calendars" class="form-row mb-2">
+  <div class="input-group">
+    <input type="text" class="form-control" [value]="calendar" readonly />
+    <div class="input-group-prepend">
+      <button class="btn btn-danger input-group-append" (click)="onDeleteClick(calendar)">
+        <fa-icon [icon]="faTrashAlt"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

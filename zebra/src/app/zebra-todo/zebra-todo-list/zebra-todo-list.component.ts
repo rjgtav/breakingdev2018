@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {faCalendarAlt, faCheck, faCheckCircle, faClock, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faCalendarAlt, faCheck, faCheckCircle, faClock, faCog, faPlus} from "@fortawesome/free-solid-svg-icons";
 import {ZebraService} from "../../shared/zebra.service";
 import {Subscription} from "rxjs";
 import {ZebraTask} from "../../shared/zebra-task.model";
 import {faCircle} from "@fortawesome/free-regular-svg-icons";
 import {TimeService} from "../../shared/time.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'zebra-todo-list',
@@ -19,6 +20,7 @@ export class ZebraTodoListComponent implements OnInit, OnDestroy {
   faCheck = faCheck;
   faCheckCircle = faCheckCircle;
   faCircle = faCircle;
+  faCog = faCog;
   faPlus = faPlus;
   faClock = faClock;
   ZebraTodoListTab = ZebraTodoListTab;
@@ -31,7 +33,7 @@ export class ZebraTodoListComponent implements OnInit, OnDestroy {
 
   subscriptionTasks: Subscription;
 
-  constructor(private zebraService: ZebraService) { }
+  constructor(private router: Router, private zebraService: ZebraService) { }
 
   get IsTutorial(): boolean {
     return Object.keys(this.daysByTab).length == 0 || (1 == 1
@@ -48,6 +50,10 @@ export class ZebraTodoListComponent implements OnInit, OnDestroy {
   onCompleteClick(event: MouseEvent, task: ZebraTask) {
     event.stopPropagation();
     this.zebraService.taskComplete(task).subscribe(value => this.ngOnInit());
+  }
+
+  onSettingsClick() {
+    this.router.navigate(['/settings']);
   }
 
   onTabClick(tab: ZebraTodoListTab) {
@@ -90,7 +96,7 @@ export class ZebraTodoListComponent implements OnInit, OnDestroy {
     console.log(this.tasksByTab)
   }
 
-  onTimeTravelClick(enable: boolean, direction: -1 | 1) {
+  onTimeTravelClick(enable: boolean, direction: number) {
     this.timeTravel = enable;
     TimeService.Travel(enable, direction);
   }

@@ -17,7 +17,7 @@ export class TimeService {
     return result;
   }
 
-  static Travel(enable: boolean, direction: -1 | 1) {
+  static Travel(enable: boolean, direction: number) {
     clearInterval(TimeService.interval);
 
     if (enable)
