@@ -56,11 +56,12 @@ def ep_hello():
     #return 'Hello, World!'
 
 @app.route('/<name>.js')
-def serve_static(path):
-    print("AAAA")
-    root_dir = os.path.dirname(os.getcwd())
-    print(os.path.join(root_dir, 'static', 'js'))
-    return send_from_directory(os.path.join(root_dir, 'static', 'js'), path)
+def serve_static(name):
+    #print("AAAA")
+    #root_dir = os.path.dirname(os.getcwd())
+    #print(os.path.join(root_dir, 'static', 'js'))
+    #return send_from_directory(os.path.join(root_dir, 'static', 'js'), path)
+    return send_from_directory("/home/zebraplanner/breakingdev2018/zebra_backend/static", name + ".js")
 
 
 @app.errorhandler(404)
