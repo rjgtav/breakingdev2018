@@ -572,7 +572,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-var BASE_URL = 'http://127.0.0.1:8080/';
+var BASE_URL = 'http://zebraplanner.pythonanywhere.com/';
 var STORAGE_LOCAL_ID = 'zebra.account.id';
 var ZebraService = /** @class */ (function () {
     function ZebraService(http) {
@@ -648,7 +648,7 @@ var ZebraService = /** @class */ (function () {
             params['time_taken'] = _util__WEBPACK_IMPORTED_MODULE_5__["UtilService"].DateToUTC(new Date(timeTaken));
             return this.requestParameters(params)
                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["flatMap"])(function (params) { return _this.http
-                .post(BASE_URL + 'complete/', _this.requestParameters(params)); }));
+                .post(BASE_URL + 'complete/', params); }));
         }
         else {
             return this.requestParameters(params)
