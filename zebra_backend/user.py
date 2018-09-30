@@ -11,7 +11,7 @@ def timeDifference(a, b):
     return dateTimeA - dateTimeB
 
 class User:
-    def __init__(self, id, name, email):
+    def __init__(self, id, name="", email=""):
         self.id = 1
         self.tasks = []
         self.done_tasks = []

@@ -7,6 +7,7 @@ import os
 import threading
 import urllib.request
 from datetime import time, date, datetime, timedelta
+import uuid
 
 from task import Task
 from user import User
@@ -21,6 +22,19 @@ class DatabaseClass:
 
     def addUser(self, user):
         self.users[user.id] = user
+    
+    def generateUser(self):
+        success = False
+        for i in range(100):
+            id = uuid.uuid4().hex[:8].upper()
+            if not id in self.users:
+                success = True
+                self.users[id] = User(id)
+        if success:
+            return id
+        else:
+            return None
+
 
     def getUser(self, key):
         if not key in self.users:
@@ -32,7 +46,7 @@ db = DatabaseClass()
 
 
 #Dummy data:
-db.addUser(User(1, "Zebra", "zebra@zebroide.zeb"))
+db.addUser(User("1", "Zebra", "zebra@zebroide.zeb"))
 
 ############################################################
 
@@ -190,6 +204,11 @@ def del_cal():
     else:
         print ("WARNING: user not found")
     return ""
+
+@app.route('/signup/', methods=['GET'])
+def signup():
+    id = db.generateUser()
+    return json.dumps({"id": id}, indent=4, sort_keys=True, default=str)
 
 
 if __name__ == '__main__':
