@@ -37,6 +37,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _zebra_todo_zebra_todo_list_zebra_todo_list_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./zebra-todo/zebra-todo-list/zebra-todo-list.component */ "./src/app/zebra-todo/zebra-todo-list/zebra-todo-list.component.ts");
 /* harmony import */ var _zebra_todo_zebra_todo_add_zebra_todo_add_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./zebra-todo/zebra-todo-add/zebra-todo-add.component */ "./src/app/zebra-todo/zebra-todo-add/zebra-todo-add.component.ts");
+/* harmony import */ var _zebra_todo_zebra_todo_settings_zebra_todo_settings_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./zebra-todo/zebra-todo-settings/zebra-todo-settings.component */ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -47,10 +48,12 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
+
 var routes = [
     { path: '', component: _zebra_todo_zebra_todo_list_zebra_todo_list_component__WEBPACK_IMPORTED_MODULE_2__["ZebraTodoListComponent"] },
-    { path: 'new', component: _zebra_todo_zebra_todo_add_zebra_todo_add_component__WEBPACK_IMPORTED_MODULE_3__["ZebraTodoAddComponent"] },
     { path: 'edit/:id', component: _zebra_todo_zebra_todo_add_zebra_todo_add_component__WEBPACK_IMPORTED_MODULE_3__["ZebraTodoAddComponent"] },
+    { path: 'new', component: _zebra_todo_zebra_todo_add_zebra_todo_add_component__WEBPACK_IMPORTED_MODULE_3__["ZebraTodoAddComponent"] },
+    { path: 'settings', component: _zebra_todo_zebra_todo_settings_zebra_todo_settings_component__WEBPACK_IMPORTED_MODULE_4__["ZebraTodoSettingsComponent"] },
 ];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {
@@ -576,6 +579,12 @@ var ZebraService = /** @class */ (function () {
         this.http = http;
         this.tasks = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]([]);
     }
+    ZebraService.prototype.loadCalendars = function () {
+        var _this = this;
+        return this.requestParameters()
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["flatMap"])(function (params) { return _this.http
+            .post(BASE_URL + 'cals/get/', params); }));
+    };
     ZebraService.prototype.loadTasks = function (force) {
         var _this = this;
         if (force || this.tasks.getValue().length == 0)
@@ -605,6 +614,12 @@ var ZebraService = /** @class */ (function () {
                 });
             }
         });
+    };
+    ZebraService.prototype.calendarAdd = function (calendar) {
+        return null;
+    };
+    ZebraService.prototype.calendarDelete = function (calendar) {
+        return null;
     };
     ZebraService.prototype.taskAdd = function (task) {
         var _this = this;
@@ -998,6 +1013,69 @@ var ZebraTodoListTab;
 
 /***/ }),
 
+/***/ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.css":
+/*!**********************************************************************************!*\
+  !*** ./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.css ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+
+/***/ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.html":
+/*!***********************************************************************************!*\
+  !*** ./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.html ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<p>\n  zebra-todo-settings works!\n</p>\n"
+
+/***/ }),
+
+/***/ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.ts":
+/*!*********************************************************************************!*\
+  !*** ./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.ts ***!
+  \*********************************************************************************/
+/*! exports provided: ZebraTodoSettingsComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZebraTodoSettingsComponent", function() { return ZebraTodoSettingsComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var ZebraTodoSettingsComponent = /** @class */ (function () {
+    function ZebraTodoSettingsComponent() {
+    }
+    ZebraTodoSettingsComponent.prototype.ngOnInit = function () {
+    };
+    ZebraTodoSettingsComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-zebra-todo-settings',
+            template: __webpack_require__(/*! ./zebra-todo-settings.component.html */ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.html"),
+            styles: [__webpack_require__(/*! ./zebra-todo-settings.component.css */ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], ZebraTodoSettingsComponent);
+    return ZebraTodoSettingsComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/zebra-todo/zebra-todo.module.ts":
 /*!*************************************************!*\
   !*** ./src/app/zebra-todo/zebra-todo.module.ts ***!
@@ -1019,12 +1097,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
+/* harmony import */ var _zebra_todo_settings_zebra_todo_settings_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./zebra-todo-settings/zebra-todo-settings.component */ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -1058,6 +1138,7 @@ var ZebraTodoModule = /** @class */ (function () {
             declarations: [
                 _zebra_todo_list_zebra_todo_list_component__WEBPACK_IMPORTED_MODULE_2__["ZebraTodoListComponent"],
                 _zebra_todo_add_zebra_todo_add_component__WEBPACK_IMPORTED_MODULE_5__["ZebraTodoAddComponent"],
+                _zebra_todo_settings_zebra_todo_settings_component__WEBPACK_IMPORTED_MODULE_11__["ZebraTodoSettingsComponent"],
             ]
         })
     ], ZebraTodoModule);
