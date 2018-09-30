@@ -1,3 +1,16 @@
+<!-- Time Travelling -->
+<div class="col position-fixed w-100" style="top: 0; left: 0">
+  <div class="row">
+    <div *ngIf="timeTravel" class="position-absolute text-center text-white w-100">{{ Today.toString().slice(0, 25) }}</div>
+    <div class="col pt-2 pb-2"
+         (touchstart)="onTimeTravelClick(true, -1)"
+         (touchend)="onTimeTravelClick(false, -1)">&nbsp;</div>
+    <div class="col pt-2 pb-2"
+         (touchstart)="onTimeTravelClick(true, 1)"
+         (touchend)="onTimeTravelClick(false, -1)">&nbsp;</div>
+  </div>
+</div>
+
 <!-- Navigation -->
 <div class="row text-white" style="margin-top: 96px;">
   <div class="d-flex flex-row justify-content-center w-100">
@@ -20,7 +33,7 @@
 <!-- List -->
 <div class="col">
   <div *ngFor="let day of daysByTab[tab]">
-    <div *ngIf="day != today" class="text-center">
+    <div [style.opacity]="day.toDateString() != Today.toDateString() ? 1 : 0" class="text-center">
       <span class="badge badge-dark mb-2 mt-3 ml-auto mr-auto" style="font-size: inherit; font-weight: inherit">
         {{ day.toDateString() }}
       </span>
@@ -30,7 +43,8 @@
          [routerLink]="'/edit/' + task.$ID">
       <fa-icon class="mr-3"
                [icon]="task.Complete ? faCheckCircle : faCircle" style="font-size: 120%"
-               [ngClass]="{ 'text-success': task.Complete }"></fa-icon>
+               [ngClass]="{ 'text-success': task.Complete }"
+               (click)="onCompleteClick($event, task)"></fa-icon>
       <span style="line-height: 1">
         <span>{{ task.Name }}</span><br/>
         <small class="text-muted">{{ task.TimeStartInMinutes | time }} ~ {{ task.TimeEndInMinutes | time }}</small>
@@ -50,6 +64,12 @@
   </div>
 </div>
 
-<div routerLink="/new" class="d-flex position-fixed align-items-center justify-content-center bg-white shadow rounded-circle" style="width: 3rem; height: 3rem; bottom: 1.5rem; right: 1.5rem;">
-  <fa-icon class="text-info" [icon]="faPlus"></fa-icon>
+<div class="position-fixed w-100" style="bottom: 1rem; left: 0;">
+  <div class="container position-relative">
+    <div class="row justify-content-end" style="height: 3rem;">
+      <div routerLink="/new" class="d-flex align-items-center justify-content-center bg-white shadow rounded-circle mr-3" style="width: 3rem; height: 3rem;">
+        <fa-icon class="text-info" [icon]="faPlus"></fa-icon>
+      </div>
+    </div>
+  </div>
 </div>

@@ -8,9 +8,11 @@ import {FormsModule} from "@angular/forms";
 import {OwlDateTimeModule, OwlNativeDateTimeModule} from "ng-pick-datetime";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterModule} from "@angular/router";
+import {BrowserModule} from "@angular/platform-browser";
 
 @NgModule({
   imports: [
+    BrowserModule,
     CommonModule,
     FontAwesomeModule,
     FormsModule,
@@ -25,7 +27,7 @@ import {RouterModule} from "@angular/router";
   ],
   declarations: [
     ZebraTodoListComponent,
-    ZebraTodoAddComponent
+    ZebraTodoAddComponent,
   ]
 })
 export class ZebraTodoModule { }

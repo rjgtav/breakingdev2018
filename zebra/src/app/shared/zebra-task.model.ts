@@ -1,11 +1,12 @@
 import {UtilService} from "./util";
+import {TimeService} from "./time.service";
 
 export class ZebraTask {
 
   $ID: number;
   Complete: boolean;
   Deadline: Date;
-  Duration: Date = new Date(0); // only hours and minutes
+  Duration: Date; // only hours and minutes
   Name: string;
   Notes: string;
   Scheduled: Date;
@@ -36,7 +37,10 @@ export class ZebraTask {
   }
 
   constructor() {
+    this.Duration = new Date(0);
     this.Duration.setHours(0);
+    this.Duration.setMinutes(0);
+    this.Duration.setSeconds(0);
   }
 
   get DeadlineInMinutes(): number {
@@ -56,7 +60,7 @@ export class ZebraTask {
   }
 
   get IsToday(): boolean {
-    return this.Scheduled != null && this.Scheduled.toDateString() == new Date().toDateString();
+    return this.Scheduled != null && this.Scheduled.toDateString() == TimeService.Now().toDateString();
   }
   get IsScheduled(): boolean {
     return this.Scheduled && !this.Complete && !this.IsToday;

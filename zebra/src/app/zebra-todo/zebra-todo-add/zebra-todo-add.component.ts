@@ -13,6 +13,7 @@ import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
 import {Subscription} from "rxjs";
 import {ZebraService} from "../../shared/zebra.service";
 import {ZebraTodoListComponent} from "../zebra-todo-list/zebra-todo-list.component";
+import {TimeService} from "../../shared/time.service";
 
 @Component({
   selector: 'app-zebra-todo-add',
@@ -80,7 +81,7 @@ export class ZebraTodoAddComponent implements OnInit, OnDestroy {
   }
 
   onTodayClick() {
-    this.task.Scheduled = new Date();
+    this.task.Scheduled = TimeService.Now();
     this.onSaveClick();
   }
 

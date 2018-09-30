@@ -3,7 +3,7 @@
 <owl-date-time #Scheduled [pickerMode]="'dialog'"></owl-date-time>
 
 <!-- Back -->
-<div class="col position-absolute text-white" style="top: 0.5rem; width: auto;">
+<div class="col position-fixed text-white" style="top: 0.5rem; width: auto;">
   <div class="row align-items-center"
        (click)="onBackClick()">
     <fa-icon class="mr-2" style="font-size: 2rem" [icon]="faChevronLeft"></fa-icon>
@@ -115,19 +115,23 @@
 </div>
 
 <!-- Delete/Save button -->
-<div class="col position-fixed mb-3" style="bottom: 0">
-  <div class="row align-items-center bg-white w-100" style="height: 3rem;">
-    <div class="col text-center text-primary" style="opacity: 0.75;"
-         (click)="onSaveClick()">
-      <fa-icon class="mr-3" style="font-size: 120%"
-               [icon]="faSave"></fa-icon>
-      <span>Save</span>
-    </div>
-    <div *ngIf="!isNew" class="col text-danger text-center"
-         (click)="onDeleteClick()">
-      <fa-icon class="mr-3" style="font-size: 120%"
-               [icon]="faTrashAlt"></fa-icon>
-      <span>Delete</span>
+<div class="position-fixed w-100" style="bottom: 1rem; left: 0;">
+  <div class="container">
+    <div class="col">
+      <div class="row align-items-center bg-white" style="height: 3rem">
+        <div *ngIf="!task.Complete" class="col text-center text-primary" style="opacity: 0.75;"
+             (click)="onSaveClick()">
+          <fa-icon class="mr-3" style="font-size: 120%"
+                   [icon]="faSave"></fa-icon>
+          <span>Save</span>
+        </div>
+        <div *ngIf="!isNew" class="col text-danger text-center"
+             (click)="onDeleteClick()">
+          <fa-icon class="mr-3" style="font-size: 120%"
+                   [icon]="faTrashAlt"></fa-icon>
+          <span>Delete</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

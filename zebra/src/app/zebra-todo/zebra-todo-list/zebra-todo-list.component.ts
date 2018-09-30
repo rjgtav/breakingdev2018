@@ -4,6 +4,7 @@ import {ZebraService} from "../../shared/zebra.service";
 import {Subscription} from "rxjs";
 import {ZebraTask} from "../../shared/zebra-task.model";
 import {faCircle} from "@fortawesome/free-regular-svg-icons";
+import {TimeService} from "../../shared/time.service";
 
 @Component({
   selector: 'zebra-todo-list',
@@ -25,7 +26,8 @@ export class ZebraTodoListComponent implements OnInit, OnDestroy {
   daysByTab: { [key: string]: Date[] } = {};
   tab: ZebraTodoListTab;
   tasksByTab: {[key: string]: { [key: number]: ZebraTask[]}} = {};
-  today: Date = new Date();
+
+  timeTravel: boolean;
 
   subscriptionTasks: Subscription;
 
@@ -37,6 +39,15 @@ export class ZebraTodoListComponent implements OnInit, OnDestroy {
       && this.daysByTab[this.ZebraTodoListTab.TODAY].length == 0
       && this.daysByTab[this.ZebraTodoListTab.SCHEDULED].length == 0
     );
+  }
+
+  get Today(): Date {
+    return TimeService.Now();
+  }
+
+  onCompleteClick(event: MouseEvent, task: ZebraTask) {
+    event.stopPropagation();
+    this.zebraService.taskComplete(task).subscribe(value => this.ngOnInit());
   }
 
   onTabClick(tab: ZebraTodoListTab) {
@@ -63,13 +74,25 @@ export class ZebraTodoListComponent implements OnInit, OnDestroy {
         (tasksByDay[day.toDateString()] = tasksByDay[day.toDateString()] || []).push(value);
 
         let days = this.daysByTab[tab] = this.daysByTab[tab] || [];
-        if (days.indexOf(day) < 0)
+        let found = false;
+        for (let date of days)
+          if (day.getTime() == date.getTime()) {
+            found = true;
+            break;
+          }
+
+        if (!found)
           days.push(day);
 
         return accumulator;
     }, {});
 
     console.log(this.tasksByTab)
+  }
+
+  onTimeTravelClick(enable: boolean, direction: -1 | 1) {
+    this.timeTravel = enable;
+    TimeService.Travel(enable, direction);
   }
 
   ngOnInit(): void {
