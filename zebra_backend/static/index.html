@@ -1,25 +1,13 @@
-from datetime import timedelta
-from icalevents.icalevents import events
-class IcalCalendar:
-    def __init__(self, url):
-        self.url = url
-        self.refreshed = None
-        self.spaces = []
-    
-    def refresh(self, day):
-        if not self.refreshed or self.refreshed + timedelta(days=1) < day:
-            try:
-                es = events(self.url)
-                self.spaces = [(ev.start, ev.end) for ev in es]
-            except Exception as e:
-                print("ERROR while refreshing iCal")
-                print(e)
-
-    
-    def get_busy_times(self, day):
-        self.refresh(day)
-        res = []
-        for s,e in self.spaces:
-            if s.day() == day:
-                res.append((s.time(), e.time()))
-        return res
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zebra</title>
+  <base href="http://zebraplanner.pythonanywhere.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="polyfills.js"></script><script type="text/javascript" src="styles.js"></script><script type="text/javascript" src="vendor.js"></script><script type="text/javascript" src="main.js"></script></body>
+</html>
