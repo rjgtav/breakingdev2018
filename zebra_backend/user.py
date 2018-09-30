@@ -2,7 +2,7 @@ from datetime import time, date, datetime, timedelta
 
 from task import Task
 from learning import TextLearning, HoursLearning
-from calendare import IcalCalendar
+from calendare import IcalCalendar 
 
 def timeDifference(a, b):
     dateTimeA = datetime.combine(date.today(), a)
@@ -51,8 +51,7 @@ class User:
             self.addTaskToDaysSchedule(t)
 
     def dayIsFull(self, day, respect_prefered):
-        #FUODO take calendar into account
-        if respect_prefered and day.weekday() >= 5: #Is weekend
+        if respect_prefered and day.weekday() in [5]: #Is weekend
             return True
 
         tasks = self.tasks_per_day.setdefault(day, [])
@@ -88,7 +87,10 @@ class User:
         else:
             spaces = [(max(now.time(), self.startHour), max(now.time(), self.stopHour))]
         tasks = self.tasks_per_day.setdefault(day, [])
-        #FUODO take calendar into account
+        # Take calendar into account
+        for c in self.cals:
+            for start, end in c.get_busy_times(day):
+                spaces = self.auxRemoveSpaces(spaces, start, end)
         # Remove space for lunch/dinner
         for start, end in self.exclusion:
             spaces = self.auxRemoveSpaces(spaces, start, end)

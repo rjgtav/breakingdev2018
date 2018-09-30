@@ -1,6 +1,6 @@
 from user import *
 
-u = User("name","email")
+u = User(2, "name","email")
 tasks = [
     Task(name="name1", duration=timedelta(hours=2), deadline=datetime(year=2018, month=10, day=30), notes = "Note1"),
     Task(name="name2", duration=timedelta(hours=2), deadline=datetime(year=2018, month=10, day=30), notes = "Note1"),
