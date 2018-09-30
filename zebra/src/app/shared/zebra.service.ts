@@ -6,7 +6,7 @@ import {flatMap, map} from "rxjs/operators";
 import {UtilService} from "./util";
 import {TimeService} from "./time.service";
 
-const BASE_URL = 'http://127.0.0.1:8080/';
+const BASE_URL = 'http://zebraplanner.pythonanywhere.com/';
 const STORAGE_LOCAL_ID = 'zebra.account.id';
 
 @Injectable({
@@ -91,7 +91,7 @@ export class ZebraService {
 
       return this.requestParameters(params)
         .pipe(flatMap(params => this.http
-          .post(BASE_URL + 'complete/', this.requestParameters(params))));
+          .post(BASE_URL + 'complete/', params)));
     } else {
       return this.requestParameters(params)
         .pipe(flatMap(params => this.http.post(BASE_URL + 'uncomplete/', params)));
