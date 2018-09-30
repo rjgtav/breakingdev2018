@@ -572,7 +572,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-var BASE_URL = 'http://zebraplanner.pythonanywhere.com/';
+var BASE_URL = 'https://zebraplanner.pythonanywhere.com/';
 var STORAGE_LOCAL_ID = 'zebra.account.id';
 var ZebraService = /** @class */ (function () {
     function ZebraService(http) {

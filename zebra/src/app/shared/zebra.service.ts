@@ -6,7 +6,7 @@ import {flatMap, map} from "rxjs/operators";
 import {UtilService} from "./util";
 import {TimeService} from "./time.service";
 
-const BASE_URL = 'http://zebraplanner.pythonanywhere.com/';
+const BASE_URL = 'https://zebraplanner.pythonanywhere.com/';
 const STORAGE_LOCAL_ID = 'zebra.account.id';
 
 @Injectable({
