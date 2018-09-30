@@ -10,7 +10,7 @@ from datetime import time, date, datetime, timedelta
 
 from task import Task
 from user import User
-from calendar import IcalCalendar
+from calendare import IcalCalendar
 
 app = Flask(__name__)
 CORS(app)
@@ -56,15 +56,16 @@ def add_task():
     input = json.loads(request.data)
     user = db.getUser(input['user'])
     if user:
-        duraton_time = datetime.strptime(input['duration'], "%Y-%m-%dT%H:%M:%S.000Z").time()
-        duration = datetime.combine(date.today(), duraton_time)  - datetime.combine(date.today(), time())
+        duration_time = datetime.strptime(input['duration'], "%Y-%m-%dT%H:%M:%S.000Z").time()
+        duration = datetime.combine(date.today(), duration_time)  - datetime.combine(date.today(), time())
+        now = datetime.strptime(input['time'], "%Y-%m-%dT%H:%M:%S.000Z")
         #deadline = datetime.strptime("2007-03-04T21:08:12", "%Y-%m-%dT%H:%M:%S.000Z")
         if input['deadline']:
             deadline = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S.000Z")
         else:
             deadline = None
         task = Task(input['name'], duration, deadline, input['notes'])
-        user.add_task(task, datetime.now())
+        user.add_task(task, now)
     else:
         print ("WARNING: user not found")
 
@@ -76,15 +77,16 @@ def edit_task():
     user = db.getUser(input['user'])
     if user:
         task_id = int(input['task_id'])
-        duraton_time = datetime.strptime(input['duration'], "%Y-%m-%dT%H:%M:%S.000Z").time()
-        duration = datetime.combine(date.today(), duraton_time)  - datetime.combine(date.today(), time())
+        duration_time = datetime.strptime(input['duration'], "%Y-%m-%dT%H:%M:%S.000Z").time()
+        duration = datetime.combine(date.today(), duration_time)  - datetime.combine(date.today(), time())
+        now = datetime.strptime(input['time'], "%Y-%m-%dT%H:%M:%S.000Z")
         #deadline = datetime.strptime("2007-03-04T21:08:12", "%Y-%m-%dT%H:%M:%S.000Z")
         if input['deadline']:
             deadline = datetime.strptime(input['deadline'], "%Y-%m-%dT%H:%M:%S.000Z")
         else:
             deadline = None
         schedule = datetime.strptime(input['schedule'], "%Y-%m-%dT%H:%M:%S.000Z")
-        user.edit_task(task_id, input['name'], duration, deadline, input['notes'], schedule, datetime.now())
+        user.edit_task(task_id, input['name'], duration, deadline, input['notes'], schedule, now)
     else:
         print ("WARNING: user not found")
 
@@ -94,9 +96,10 @@ def edit_task():
 def delete_task():
     input = json.loads(request.data)
     user = db.getUser(input['user'])
+    now = datetime.strptime(input['time'], "%Y-%m-%dT%H:%M:%S.000Z")
     if user:
         task_id = int(input['task_id'])
-        user.delete_task(task_id, datetime.now())
+        user.delete_task(task_id, now)
     else:
         print ("WARNING: user not found")
 
@@ -120,9 +123,10 @@ def complete_task():
 def uncomplete_task():
     input = json.loads(request.data)
     user = db.getUser(input['user'])
+    now = datetime.strptime(input['time'], "%Y-%m-%dT%H:%M:%S.000Z")
     if user:
         task_id = int(input['task_id'])
-        user.uncomplete_task(task_id, datetime.now())
+        user.uncomplete_task(task_id, now)
     else:
         print ("WARNING: user not found")
 
@@ -133,9 +137,10 @@ def uncomplete_task():
 def switch_task():
     input = json.loads(request.data)
     user = db.getUser(input['user'])
+    now = datetime.strptime(input['time'], "%Y-%m-%dT%H:%M:%S.000Z")
     if user:
         task_id = int(input['task_id'])
-        user.switch_task(task_id, datetime.now())
+        user.switch_task(task_id, now)
     else:
         print ("WARNING: user not found")
 
@@ -145,9 +150,10 @@ def switch_task():
 def postpone_task():
     input = json.loads(request.data)
     user = db.getUser(input['user'])
+    now = datetime.strptime(input['time'], "%Y-%m-%dT%H:%M:%S.000Z")
     if user:
         task_id = int(input['task_id'])
-        user.postpone_task(task_id, datetime.now())
+        user.postpone_task(task_id, now)
     else:
         print ("WARNING: user not found")
 

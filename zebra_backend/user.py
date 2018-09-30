@@ -2,7 +2,7 @@ from datetime import time, date, datetime, timedelta
 
 from task import Task
 from learning import TextLearning, HoursLearning
-from calendar import IcalCalendar 
+from calendare import IcalCalendar
 
 def timeDifference(a, b):
     dateTimeA = datetime.combine(date.today(), a)
