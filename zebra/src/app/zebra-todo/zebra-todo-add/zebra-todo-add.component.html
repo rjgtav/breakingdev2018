@@ -1,17 +1,18 @@
-<owl-date-time [pickerMode]="'dialog'" #DueDate></owl-date-time>
-<owl-date-time [pickerMode]="'dialog'" [pickerType]="'timer'" #Duration></owl-date-time>
-<owl-date-time [pickerMode]="'dialog'" #Scheduled></owl-date-time>
+<owl-date-time #DueDate [pickerMode]="'dialog'"></owl-date-time>
+<owl-date-time #Duration [pickerMode]="'dialog'" [pickerType]="'timer'"></owl-date-time>
+<owl-date-time #Scheduled [pickerMode]="'dialog'"></owl-date-time>
 
 <!-- Back -->
 <div class="col position-absolute text-white" style="top: 0.5rem; width: auto;">
-  <div class="row align-items-center">
+  <div class="row align-items-center"
+       (click)="onBackClick()">
     <fa-icon class="mr-2" style="font-size: 2rem" [icon]="faChevronLeft"></fa-icon>
     <span>Back</span>
   </div>
 </div>
 
 <!-- Header -->
-<div class="row text-white" style="margin-top: 128px; margin-bottom: 1rem;">
+<div class="row text-white" style="margin-top: 96px; margin-bottom: 1rem;">
   <div class="d-flex flex-row justify-content-center w-100">
     <fa-icon style="font-size: 2rem" [icon]="isNew ? faPlus : faPencilAlt"></fa-icon>
   </div>
@@ -24,14 +25,15 @@
     <fa-icon class="mr-3"
              [icon]="task.Complete ? faCheckCircle : faCircle" style="font-size: 120%"
              [ngClass]="{ 'text-success': task.Complete }"
-             [style.opacity]="!isNew ? 1 : 0.5"></fa-icon>
+             [style.opacity]="!isNew ? 1 : 0.5"
+             (click)="onCompleteClick()"></fa-icon>
     <input class="flex-grow-1 border-0" [(ngModel)]="task.Name" placeholder="Buy milk" type="text" />
   </div>
 
   <!-- Duration -->
   <div class="row position-relative align-items-center bg-white pl-3 pr-3 mt-2" style="height: 3rem"
        [owlDateTimeTrigger]="Duration">
-    <input [owlDateTime]="Duration" [(ngModel)]="task.Duration" type="hidden">
+    <input [owlDateTime]="Duration" [(ngModel)]="task.Duration" [max]="DURATION_MAX" [min]="DURATION_MIN" type="hidden">
 
     <fa-icon class="mr-3"
              [icon]="faStopwatch" style="font-size: 120%"
@@ -55,7 +57,7 @@
 
     <span *ngIf="!task.DeadlineInMinutes" style="opacity: 0.5">Due date</span>
     <span *ngIf="task.DeadlineInMinutes" style="line-height: 1">
-      <span>Due {{ task.DeadlineInMinutes | date }}</span><br/>
+      <span>Due {{ task.Deadline | date }}</span><br/>
       <small class="text-muted">{{ task.DeadlineInMinutes | time }}</small>
     </span>
 
@@ -81,22 +83,26 @@
   </div>
 
   <!-- Actions -->
-  <div *ngIf="!isNew" class="row position-relative align-items-center bg-white text-primary pl-3 pr-3 mt-2" style="height: 4rem">
-    <div class="col text-center" style="opacity: 0.75">
-      <fa-icon [icon]="faCalendarTimes" style="font-size: 120%"
-               [ngClass]="{ 'text-success': task.Complete }"></fa-icon><br/>
+  <div *ngIf="!isNew && !task.Complete"
+       class="row position-relative align-items-center bg-white text-primary pl-3 pr-3 mt-2" style="height: 3rem">
+    <div *ngIf="task.IsToday" class="col text-center" style="opacity: 0.75"
+         (click)="onPostponeClick()">
+      <fa-icon class="mr-3" style="font-size: 120%"
+               [icon]="faCalendarTimes"></fa-icon>
       <span>Postpone</span>
     </div>
 
-    <div class="col text-center" style="opacity: 0.75">
-      <fa-icon [icon]="faExchangeAlt" style="font-size: 120%"
-               [ngClass]="{ 'text-success': task.Complete }"></fa-icon><br/>
+    <div *ngIf="task.IsToday" class="col text-center" style="opacity: 0.75"
+         (click)="onReplaceClick()">
+      <fa-icon class="mr-3" style="font-size: 120%"
+               [icon]="faExchangeAlt"></fa-icon>
       <span>Replace</span>
     </div>
 
-    <div class="col text-center" style="opacity: 0.75">
-      <fa-icon [icon]="faCalendarPlus" style="font-size: 120%"
-               [ngClass]="{ 'text-success': task.Complete }"></fa-icon><br/>
+    <div *ngIf="!task.IsToday" class="col text-center" style="opacity: 0.75"
+         (click)="onTodayClick()">
+      <fa-icon class="mr-3" style="font-size: 120%"
+               [icon]="faCalendarPlus"></fa-icon>
       <span>Today</span>
     </div>
   </div>
@@ -111,16 +117,16 @@
 <!-- Delete/Save button -->
 <div class="col position-fixed mb-3" style="bottom: 0">
   <div class="row align-items-center bg-white w-100" style="height: 3rem;">
-    <div class="col text-center text-primary" style="opacity: 0.75;">
-      <fa-icon class="mr-3"
-               [icon]="faSave" style="font-size: 120%"
-               [ngClass]="{ 'text-success': task.Complete }"></fa-icon>
+    <div class="col text-center text-primary" style="opacity: 0.75;"
+         (click)="onSaveClick()">
+      <fa-icon class="mr-3" style="font-size: 120%"
+               [icon]="faSave"></fa-icon>
       <span>Save</span>
     </div>
-    <div *ngIf="!isNew" class="col text-danger text-center">
-      <fa-icon class="mr-3"
-               [icon]="faTrashAlt" style="font-size: 120%"
-               [ngClass]="{ 'text-success': task.Complete }"></fa-icon>
+    <div *ngIf="!isNew" class="col text-danger text-center"
+         (click)="onDeleteClick()">
+      <fa-icon class="mr-3" style="font-size: 120%"
+               [icon]="faTrashAlt"></fa-icon>
       <span>Delete</span>
     </div>
   </div>

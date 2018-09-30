@@ -1,5 +1,5 @@
 <!-- Navigation -->
-<div class="row text-white" style="margin-top: 128px; margin-bottom: 1rem;">
+<div class="row text-white" style="margin-top: 96px;">
   <div class="d-flex flex-row justify-content-center w-100">
     <fa-icon class="mr-2 ml-2" style="font-size: 2rem"
              [icon]="faCheck"
@@ -19,15 +19,37 @@
 
 <!-- List -->
 <div class="col">
-  <div *ngFor="let task of tasksByTab[tab]; let i = index" class="row position-relative bg-white pl-3 pr-3 align-items-center" style="height: 3rem">
-    <fa-icon class="mr-3"
-             [icon]="task.Complete ? faCheckCircle : faCircle" style="font-size: 120%"
-             [ngClass]="{ 'text-success': task.Complete }"></fa-icon>
-    <span style="line-height: 1">
-      <span>{{ task.Name }}</span><br/>
-      <small class="text-muted">{{ task.TimeStartInMinutes | time }} ~ {{ task.TimeEndInMinutes | time }}</small>
-    </span>
-    <span *ngIf="i < tasksByTab[tab].length - 1"
-          class="position-absolute border-bottom" style="width: calc(100% - 2rem); bottom: 0"></span>
+  <div *ngFor="let day of daysByTab[tab]">
+    <div *ngIf="day != today" class="text-center">
+      <span class="badge badge-dark mb-2 mt-3 ml-auto mr-auto" style="font-size: inherit; font-weight: inherit">
+        {{ day.toDateString() }}
+      </span>
+    </div>
+    <div *ngFor="let task of tasksByTab[tab][day.toDateString()]; let i = index"
+         class="row position-relative bg-white pl-3 pr-3 align-items-center" style="height: 3rem"
+         [routerLink]="'/edit/' + task.$ID">
+      <fa-icon class="mr-3"
+               [icon]="task.Complete ? faCheckCircle : faCircle" style="font-size: 120%"
+               [ngClass]="{ 'text-success': task.Complete }"></fa-icon>
+      <span style="line-height: 1">
+        <span>{{ task.Name }}</span><br/>
+        <small class="text-muted">{{ task.TimeStartInMinutes | time }} ~ {{ task.TimeEndInMinutes | time }}</small>
+      </span>
+      <span *ngIf="i < tasksByTab[tab].length - 1"
+            class="position-absolute border-bottom" style="width: calc(100% - 2rem); bottom: 0"></span>
+    </div>
   </div>
+
+  <div *ngIf="!daysByTab[tab] || daysByTab[tab].length == 0" class="pt-5 text-center text-white">
+    {{
+        IsTutorial ? 'Press the + button to add a new task' :
+        tab == ZebraTodoListTab.COMPLETED ? 'Good luck on finishing your tasks!' :
+        tab == ZebraTodoListTab.TODAY ? 'Enjoy your rest today :)' :
+        tab == ZebraTodoListTab.SCHEDULED ? 'Press the + button to add a new task' : ''
+    }}
+  </div>
+</div>
+
+<div routerLink="/new" class="d-flex position-fixed align-items-center justify-content-center bg-white shadow rounded-circle" style="width: 3rem; height: 3rem; bottom: 1.5rem; right: 1.5rem;">
+  <fa-icon class="text-info" [icon]="faPlus"></fa-icon>
 </div>

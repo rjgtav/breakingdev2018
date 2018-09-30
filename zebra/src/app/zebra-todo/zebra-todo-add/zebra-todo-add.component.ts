@@ -9,8 +9,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {ZebraTask} from "../../shared/zebra-task.model";
 import {faCalendarAlt, faCircle, faClock, faSave} from "@fortawesome/free-regular-svg-icons";
-import {ActivatedRoute, UrlSegment} from "@angular/router";
+import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
 import {Subscription} from "rxjs";
+import {ZebraService} from "../../shared/zebra.service";
+import {ZebraTodoListComponent} from "../zebra-todo-list/zebra-todo-list.component";
 
 @Component({
   selector: 'app-zebra-todo-add',
@@ -18,6 +20,9 @@ import {Subscription} from "rxjs";
   styleUrls: ['./zebra-todo-add.component.css']
 })
 export class ZebraTodoAddComponent implements OnInit, OnDestroy {
+
+  readonly DURATION_MIN = new Date(1970, 0, 1, 0, 0);
+  readonly DURATION_MAX = new Date(1970, 0, 1, 5, 30);
 
   faCalendarAlt = faCalendarAlt;
   faCalendarTimes = faCalendarTimes;
@@ -33,15 +38,56 @@ export class ZebraTodoAddComponent implements OnInit, OnDestroy {
   faStopwatch = faStopwatch;
   faTrashAlt = faTrashAlt;
 
-  @Input() task: ZebraTask;
+  @Input() task: ZebraTask = new ZebraTask();
 
   isNew: boolean;
 
+  subscriptionTask: Subscription;
   subscriptionUrl: Subscription;
 
+  constructor(private route: ActivatedRoute, private router: Router, private zebraService: ZebraService) {}
 
-  constructor(private route: ActivatedRoute) {}
+  onBackClick() {
+    this.router.navigate(['/']);
+  }
 
+  onCompleteClick() {
+    this.zebraService.taskComplete(this.task).subscribe(value => this.onBackClick());
+  }
+
+  onDeleteClick() {
+    this.zebraService.taskDelete(this.task.$ID).subscribe(value => this.onBackClick());
+  }
+
+  onPostponeClick() {
+    this.zebraService.taskPostpone(this.task.$ID).subscribe(value => this.onBackClick());
+  }
+
+  onReplaceClick() {
+    this.zebraService.taskReplace(this.task.$ID).subscribe(value => this.onBackClick());
+  }
+
+  onSaveClick() {
+    if (!this.task.IsValid)
+      return;
+
+    if (this.isNew) {
+      this.zebraService.taskAdd(this.task).subscribe(value => this.onBackClick());
+      sessionStorage.removeItem(ZebraTodoListComponent.SESSION_TAB);
+    } else {
+      this.zebraService.taskEdit(this.task).subscribe(value => this.onBackClick());
+    }
+  }
+
+  onTodayClick() {
+    this.task.Scheduled = new Date();
+    this.onSaveClick();
+  }
+
+  onTaskChange(task: ZebraTask) {
+    if (task == null) return;
+    this.task = task;
+  }
   onUrlChange(url: UrlSegment[]) {
     let path = url[0].path;
 
@@ -50,7 +96,9 @@ export class ZebraTodoAddComponent implements OnInit, OnDestroy {
       this.task = new ZebraTask();
     } else {
       this.isNew = false;
-      // TODO: get from service
+
+      this.subscriptionTask && this.subscriptionTask.unsubscribe();
+      this.subscriptionTask = this.zebraService.taskGet(parseInt(url[1].path)).subscribe(value => this.onTaskChange(value));
     }
   }
 
@@ -60,6 +108,7 @@ export class ZebraTodoAddComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.subscriptionTask && this.subscriptionTask.unsubscribe();
     this.subscriptionUrl && this.subscriptionUrl.unsubscribe();
   }
 

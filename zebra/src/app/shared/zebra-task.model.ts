@@ -1,3 +1,5 @@
+import {UtilService} from "./util";
+
 export class ZebraTask {
 
   $ID: number;
@@ -9,10 +11,28 @@ export class ZebraTask {
   Scheduled: Date;
 
   static fromJSON(json: any): ZebraTask {
-    return null; // TODO: implement
+    let task: ZebraTask = new ZebraTask();
+        task.$ID = json['id'];
+        task.Deadline = json['deadline']
+          ? new Date(Date.parse(json['deadline']))
+          : null;
+        task.Complete = json['done'];
+        task.Duration = new Date(Date.parse('1970-01-01 ' + json['duration']));
+        task.Name = json['name'];
+        task.Notes = json['notes'];
+        task.Scheduled = new Date(Date.parse(json['scheduled']));
+
+    return task;
   }
   static toJSON(obj: ZebraTask): any {
-    return null; // TODO: implement
+    return {
+      task_id: obj.$ID ? obj.$ID : null,
+      duration: UtilService.DateToUTC(obj.Duration),
+      deadline: UtilService.DateToUTC(obj.Deadline),
+      name: obj.Name,
+      notes: obj.Notes ? obj.Notes : '',
+      schedule: UtilService.DateToUTC(obj.Scheduled)
+    };
   }
 
   constructor() {
@@ -40,6 +60,10 @@ export class ZebraTask {
   }
   get IsScheduled(): boolean {
     return this.Scheduled && !this.Complete && !this.IsToday;
+  }
+
+  get IsValid(): boolean {
+    return !!this.Duration && !!this.Name;
   }
 
   get TimeStartInMinutes(): number {
