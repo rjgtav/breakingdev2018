@@ -577,13 +577,16 @@ var STORAGE_LOCAL_ID = 'zebra.account.id';
 var ZebraService = /** @class */ (function () {
     function ZebraService(http) {
         this.http = http;
+        this.calendars = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]([]);
         this.tasks = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]([]);
     }
     ZebraService.prototype.loadCalendars = function () {
         var _this = this;
-        return this.requestParameters()
+        this.requestParameters()
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["flatMap"])(function (params) { return _this.http
-            .post(BASE_URL + 'cals/get/', params); }));
+            .post(BASE_URL + 'cals/get/', params); }))
+            .subscribe(function (value) { return _this.calendars.next(value); });
+        return this.calendars.asObservable();
     };
     ZebraService.prototype.loadTasks = function (force) {
         var _this = this;
@@ -616,10 +619,16 @@ var ZebraService = /** @class */ (function () {
         });
     };
     ZebraService.prototype.calendarAdd = function (calendar) {
-        return null;
+        var _this = this;
+        return this.requestParameters({ url: calendar })
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["flatMap"])(function (params) { return _this.http
+            .post(BASE_URL + 'cals/add/', params); }));
     };
     ZebraService.prototype.calendarDelete = function (calendar) {
-        return null;
+        var _this = this;
+        return this.requestParameters({ url: calendar })
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["flatMap"])(function (params) { return _this.http
+            .post(BASE_URL + 'cals/del/', params); }));
     };
     ZebraService.prototype.taskAdd = function (task) {
         var _this = this;
@@ -871,7 +880,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- Time Travelling -->\r\n<div class=\"col position-fixed w-100\" style=\"top: 0; left: 0\">\r\n  <div class=\"row\">\r\n    <div *ngIf=\"timeTravel\" class=\"position-absolute text-center text-white w-100\">{{ Today.toString().slice(0, 25) }}</div>\r\n    <div class=\"col pt-2 pb-2\"\r\n         (touchstart)=\"onTimeTravelClick(true, -1)\"\r\n         (touchend)=\"onTimeTravelClick(false, -1)\">&nbsp;</div>\r\n    <div class=\"col pt-2 pb-2\"\r\n         (touchstart)=\"onTimeTravelClick(true, 1)\"\r\n         (touchend)=\"onTimeTravelClick(false, -1)\">&nbsp;</div>\r\n  </div>\r\n</div>\r\n\r\n<!-- Navigation -->\r\n<div class=\"row text-white\" style=\"margin-top: 96px;\">\r\n  <div class=\"d-flex flex-row justify-content-center w-100\">\r\n    <fa-icon class=\"mr-2 ml-2\" style=\"font-size: 2rem\"\r\n             [icon]=\"faCheck\"\r\n             [style.opacity]=\"tab == ZebraTodoListTab.COMPLETED ? 1 : 0.5\"\r\n             (click)=\"onTabClick(ZebraTodoListTab.COMPLETED)\"></fa-icon>\r\n    <fa-icon class=\"mr-2 ml-2\" style=\"font-size: 2rem\"\r\n             [icon]=\"faCalendarAlt\"\r\n             [style.opacity]=\"tab == ZebraTodoListTab.TODAY ? 1 : 0.5\"\r\n             (click)=\"onTabClick(ZebraTodoListTab.TODAY)\"></fa-icon>\r\n    <fa-icon class=\"mr-2 ml-2\" style=\"font-size: 2rem\"\r\n             [icon]=\"faClock\"\r\n             [style.opacity]=\"tab == ZebraTodoListTab.SCHEDULED ? 1 : 0.5\"\r\n             (click)=\"onTabClick(ZebraTodoListTab.SCHEDULED)\"></fa-icon>\r\n  </div>\r\n  <div class=\"font-weight-bold text-center text-uppercase w-100\">{{ tab }}</div>\r\n</div>\r\n\r\n<!-- List -->\r\n<div class=\"col\">\r\n  <div *ngFor=\"let day of daysByTab[tab]\">\r\n    <div [style.opacity]=\"day.toDateString() != Today.toDateString() ? 1 : 0\" class=\"text-center\">\r\n      <span class=\"badge badge-dark mb-2 mt-3 ml-auto mr-auto\" style=\"font-size: inherit; font-weight: inherit\">\r\n        {{ day.toDateString() }}\r\n      </span>\r\n    </div>\r\n    <div *ngFor=\"let task of tasksByTab[tab][day.toDateString()]; let i = index\"\r\n         class=\"row position-relative bg-white pl-3 pr-3 align-items-center\" style=\"height: 3rem\"\r\n         [routerLink]=\"'/edit/' + task.$ID\">\r\n      <fa-icon class=\"mr-3\"\r\n               [icon]=\"task.Complete ? faCheckCircle : faCircle\" style=\"font-size: 120%\"\r\n               [ngClass]=\"{ 'text-success': task.Complete }\"\r\n               (click)=\"onCompleteClick($event, task)\"></fa-icon>\r\n      <span style=\"line-height: 1\">\r\n        <span>{{ task.Name }}</span><br/>\r\n        <small class=\"text-muted\">{{ task.TimeStartInMinutes | time }} ~ {{ task.TimeEndInMinutes | time }}</small>\r\n      </span>\r\n      <span *ngIf=\"i < tasksByTab[tab].length - 1\"\r\n            class=\"position-absolute border-bottom\" style=\"width: calc(100% - 2rem); bottom: 0\"></span>\r\n    </div>\r\n  </div>\r\n\r\n  <div *ngIf=\"!daysByTab[tab] || daysByTab[tab].length == 0\" class=\"pt-5 text-center text-white\">\r\n    {{\r\n        IsTutorial ? 'Press the + button to add a new task' :\r\n        tab == ZebraTodoListTab.COMPLETED ? 'Good luck on finishing your tasks!' :\r\n        tab == ZebraTodoListTab.TODAY ? 'Enjoy your rest today :)' :\r\n        tab == ZebraTodoListTab.SCHEDULED ? 'Press the + button to add a new task' : ''\r\n    }}\r\n  </div>\r\n</div>\r\n\r\n<div class=\"position-fixed w-100\" style=\"bottom: 1rem; left: 0;\">\r\n  <div class=\"container position-relative\">\r\n    <div class=\"row justify-content-end\" style=\"height: 3rem;\">\r\n      <div routerLink=\"/new\" class=\"d-flex align-items-center justify-content-center bg-white shadow rounded-circle mr-3\" style=\"width: 3rem; height: 3rem;\">\r\n        <fa-icon class=\"text-info\" [icon]=\"faPlus\"></fa-icon>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
+module.exports = "<!-- Time Travelling -->\r\n<div class=\"col position-fixed w-100\" style=\"top: 0; left: 0\">\r\n  <div class=\"row ml-5 mr-5\">\r\n    <div *ngIf=\"timeTravel\" class=\"position-absolute text-center text-white\">{{ Today.toString().slice(0, 25) }}</div>\r\n    <div class=\"col pt-2 pb-2\"\r\n         (touchstart)=\"onTimeTravelClick(true, -1)\"\r\n         (touchend)=\"onTimeTravelClick(false, -1)\">&nbsp;</div>\r\n    <div class=\"col pt-2 pb-2\"\r\n         (touchstart)=\"onTimeTravelClick(true, 1)\"\r\n         (touchend)=\"onTimeTravelClick(false, -1)\">&nbsp;</div>\r\n  </div>\r\n</div>\r\n\r\n<!-- Settings -->\r\n<div class=\"col position-fixed text-white\" style=\"top: 0.5rem; right: 0.5rem; width: auto;\">\r\n  <div class=\"row align-items-center\"\r\n       (click)=\"onSettingsClick()\">\r\n    <fa-icon class=\"mr-2\" style=\"font-size: 2rem\" [icon]=\"faCog\"></fa-icon>\r\n  </div>\r\n</div>\r\n\r\n<!-- Navigation -->\r\n<div class=\"row text-white\" style=\"margin-top: 96px;\">\r\n  <div class=\"d-flex flex-row justify-content-center w-100\">\r\n    <fa-icon class=\"mr-2 ml-2\" style=\"font-size: 2rem\"\r\n             [icon]=\"faCheck\"\r\n             [style.opacity]=\"tab == ZebraTodoListTab.COMPLETED ? 1 : 0.5\"\r\n             (click)=\"onTabClick(ZebraTodoListTab.COMPLETED)\"></fa-icon>\r\n    <fa-icon class=\"mr-2 ml-2\" style=\"font-size: 2rem\"\r\n             [icon]=\"faCalendarAlt\"\r\n             [style.opacity]=\"tab == ZebraTodoListTab.TODAY ? 1 : 0.5\"\r\n             (click)=\"onTabClick(ZebraTodoListTab.TODAY)\"></fa-icon>\r\n    <fa-icon class=\"mr-2 ml-2\" style=\"font-size: 2rem\"\r\n             [icon]=\"faClock\"\r\n             [style.opacity]=\"tab == ZebraTodoListTab.SCHEDULED ? 1 : 0.5\"\r\n             (click)=\"onTabClick(ZebraTodoListTab.SCHEDULED)\"></fa-icon>\r\n  </div>\r\n  <div class=\"font-weight-bold text-center text-uppercase w-100\">{{ tab }}</div>\r\n</div>\r\n\r\n<!-- List -->\r\n<div class=\"col\">\r\n  <div *ngFor=\"let day of daysByTab[tab]\">\r\n    <div [style.opacity]=\"day.toDateString() != Today.toDateString() ? 1 : 0\" class=\"text-center\">\r\n      <span class=\"badge badge-dark mb-2 mt-3 ml-auto mr-auto\" style=\"font-size: inherit; font-weight: inherit\">\r\n        {{ day.toDateString() }}\r\n      </span>\r\n    </div>\r\n    <div *ngFor=\"let task of tasksByTab[tab][day.toDateString()]; let i = index\"\r\n         class=\"row position-relative bg-white pl-3 pr-3 align-items-center\" style=\"height: 3rem\"\r\n         [routerLink]=\"'/edit/' + task.$ID\">\r\n      <fa-icon class=\"mr-3\"\r\n               [icon]=\"task.Complete ? faCheckCircle : faCircle\" style=\"font-size: 120%\"\r\n               [ngClass]=\"{ 'text-success': task.Complete }\"\r\n               (click)=\"onCompleteClick($event, task)\"></fa-icon>\r\n      <span style=\"line-height: 1\">\r\n        <span>{{ task.Name }}</span><br/>\r\n        <small class=\"text-muted\">{{ task.TimeStartInMinutes | time }} ~ {{ task.TimeEndInMinutes | time }}</small>\r\n      </span>\r\n      <span *ngIf=\"i < tasksByTab[tab].length - 1\"\r\n            class=\"position-absolute border-bottom\" style=\"width: calc(100% - 2rem); bottom: 0\"></span>\r\n    </div>\r\n  </div>\r\n\r\n  <div *ngIf=\"!daysByTab[tab] || daysByTab[tab].length == 0\" class=\"pt-5 text-center text-white\">\r\n    {{\r\n        IsTutorial ? 'Press the + button to add a new task' :\r\n        tab == ZebraTodoListTab.COMPLETED ? 'Good luck on finishing your tasks!' :\r\n        tab == ZebraTodoListTab.TODAY ? 'Enjoy your rest today :)' :\r\n        tab == ZebraTodoListTab.SCHEDULED ? 'Press the + button to add a new task' : ''\r\n    }}\r\n  </div>\r\n</div>\r\n\r\n<div class=\"position-fixed w-100\" style=\"bottom: 1rem; left: 0;\">\r\n  <div class=\"container position-relative\">\r\n    <div class=\"row justify-content-end\" style=\"height: 3rem;\">\r\n      <div routerLink=\"/new\" class=\"d-flex align-items-center justify-content-center bg-white shadow rounded-circle mr-3\" style=\"width: 3rem; height: 3rem;\">\r\n        <fa-icon class=\"text-info\" [icon]=\"faPlus\"></fa-icon>\r\n      </div>\r\n    </div>\r\n  </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -890,6 +899,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_zebra_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/zebra.service */ "./src/app/shared/zebra.service.ts");
 /* harmony import */ var _fortawesome_free_regular_svg_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fortawesome/free-regular-svg-icons */ "./node_modules/@fortawesome/free-regular-svg-icons/index.es.js");
 /* harmony import */ var _shared_time_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/time.service */ "./src/app/shared/time.service.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -904,13 +914,16 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var ZebraTodoListComponent = /** @class */ (function () {
-    function ZebraTodoListComponent(zebraService) {
+    function ZebraTodoListComponent(router, zebraService) {
+        this.router = router;
         this.zebraService = zebraService;
         this.faCalendarAlt = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faCalendarAlt"];
         this.faCheck = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faCheck"];
         this.faCheckCircle = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faCheckCircle"];
         this.faCircle = _fortawesome_free_regular_svg_icons__WEBPACK_IMPORTED_MODULE_3__["faCircle"];
+        this.faCog = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faCog"];
         this.faPlus = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faPlus"];
         this.faClock = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faClock"];
         this.ZebraTodoListTab = ZebraTodoListTab;
@@ -939,6 +952,9 @@ var ZebraTodoListComponent = /** @class */ (function () {
         var _this = this;
         event.stopPropagation();
         this.zebraService.taskComplete(task).subscribe(function (value) { return _this.ngOnInit(); });
+    };
+    ZebraTodoListComponent.prototype.onSettingsClick = function () {
+        this.router.navigate(['/settings']);
     };
     ZebraTodoListComponent.prototype.onTabClick = function (tab) {
         this.tab = tab;
@@ -997,7 +1013,7 @@ var ZebraTodoListComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./zebra-todo-list.component.html */ "./src/app/zebra-todo/zebra-todo-list/zebra-todo-list.component.html"),
             styles: [__webpack_require__(/*! ./zebra-todo-list.component.css */ "./src/app/zebra-todo/zebra-todo-list/zebra-todo-list.component.css")]
         }),
-        __metadata("design:paramtypes", [_shared_zebra_service__WEBPACK_IMPORTED_MODULE_2__["ZebraService"]])
+        __metadata("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_5__["Router"], _shared_zebra_service__WEBPACK_IMPORTED_MODULE_2__["ZebraService"]])
     ], ZebraTodoListComponent);
     return ZebraTodoListComponent;
     var ZebraTodoListComponent_1;
@@ -1031,7 +1047,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  zebra-todo-settings works!\n</p>\n"
+module.exports = "<!-- Back -->\n<div class=\"col position-fixed text-white\" style=\"top: 0.5rem; width: auto;\">\n  <div class=\"row align-items-center\"\n       (click)=\"onBackClick()\">\n    <fa-icon class=\"mr-2\" style=\"font-size: 2rem\" [icon]=\"faChevronLeft\"></fa-icon>\n    <span>Back</span>\n  </div>\n</div>\n\n<!-- Header -->\n<div class=\"row text-white mb-3\" style=\"margin-top: 96px;\">\n  <div class=\"d-flex flex-row justify-content-center w-100\">\n    <fa-icon style=\"font-size: 2rem\" [icon]=\"faCog\"></fa-icon>\n  </div>\n  <div class=\"font-weight-bold text-center text-uppercase w-100\">Settings</div>\n</div>\n\n<!-- Add Calendar -->\n<div class=\"form-row\">\n  <div class=\"input-group\">\n    <input type=\"text\" class=\"form-control\" placeholder=\"Calendar\" [(ngModel)]=\"calendar\" />\n    <div class=\"input-group-prepend\">\n      <button class=\"btn btn-primary input-group-append\" (click)=\"onSaveClick()\">\n        <fa-icon [icon]=\"faSave\"></fa-icon>\n      </button>\n    </div>\n  </div>\n</div>\n\n<!-- Calendars -->\n<div class=\"font-weight-bold text-center text-uppercase text-white w-100 mt-3 mb-3\">Calendars</div>\n\n<div *ngFor=\"let calendar of calendars\" class=\"form-row mb-2\">\n  <div class=\"input-group\">\n    <input type=\"text\" class=\"form-control\" [value]=\"calendar\" readonly />\n    <div class=\"input-group-prepend\">\n      <button class=\"btn btn-danger input-group-append\" (click)=\"onDeleteClick(calendar)\">\n        <fa-icon [icon]=\"faTrashAlt\"></fa-icon>\n      </button>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -1046,6 +1062,9 @@ module.exports = "<p>\n  zebra-todo-settings works!\n</p>\n"
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ZebraTodoSettingsComponent", function() { return ZebraTodoSettingsComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _shared_zebra_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/zebra.service */ "./src/app/shared/zebra.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1056,10 +1075,38 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
+
+
 var ZebraTodoSettingsComponent = /** @class */ (function () {
-    function ZebraTodoSettingsComponent() {
+    function ZebraTodoSettingsComponent(router, zebraService) {
+        this.router = router;
+        this.zebraService = zebraService;
+        this.faChevronLeft = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faChevronLeft"];
+        this.faCog = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faCog"];
+        this.faSave = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faSave"];
+        this.faTrashAlt = _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_1__["faTrashAlt"];
     }
+    ZebraTodoSettingsComponent.prototype.onBackClick = function () {
+        this.router.navigate(['/']);
+    };
+    ZebraTodoSettingsComponent.prototype.onDeleteClick = function (calendar) {
+        var _this = this;
+        if (calendar)
+            this.zebraService.calendarDelete(calendar).subscribe(function (value) { return _this.zebraService.loadCalendars(); });
+    };
+    ZebraTodoSettingsComponent.prototype.onSaveClick = function () {
+        var _this = this;
+        if (this.calendar)
+            this.zebraService.calendarAdd(this.calendar).subscribe(function (value) { return _this.zebraService.loadCalendars(); });
+    };
     ZebraTodoSettingsComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.subscriptionCalendars && this.subscriptionCalendars.unsubscribe();
+        this.subscriptionCalendars = this.zebraService.loadCalendars().subscribe(function (value) { return _this.calendars = value; });
+    };
+    ZebraTodoSettingsComponent.prototype.ngOnDestroy = function () {
+        this.subscriptionCalendars && this.subscriptionCalendars.unsubscribe();
     };
     ZebraTodoSettingsComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -1067,7 +1114,7 @@ var ZebraTodoSettingsComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./zebra-todo-settings.component.html */ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.html"),
             styles: [__webpack_require__(/*! ./zebra-todo-settings.component.css */ "./src/app/zebra-todo/zebra-todo-settings/zebra-todo-settings.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"], _shared_zebra_service__WEBPACK_IMPORTED_MODULE_3__["ZebraService"]])
     ], ZebraTodoSettingsComponent);
     return ZebraTodoSettingsComponent;
 }());
