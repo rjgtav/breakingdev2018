@@ -52,8 +52,28 @@ db.addUser(User("1", "Zebra", "zebra@zebroide.zeb"))
 
 @app.route('/')
 def ep_hello():
-    #return app.send_static_file('index.html')
-    return 'Hello, World!'
+    return app.send_static_file('index.html')
+    #return 'Hello, World!'
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    root_dir = os.path.dirname(os.getcwd())
+    return send_from_directory(os.path.join(root_dir, 'static', 'js'), filename)
+
+
+@app.errorhandler(404)
+def serve_main(e):
+    return app.send_static_file('index.html')
+    #return "This is a 404" #return render_template('404.html'), 404
+
+
+
+@app.route('/signup/', methods=['GET'])
+def signup():
+    id = db.generateUser()
+    return json.dumps({"id": id}, indent=4, sort_keys=True, default=str)
+
+######################### TASKS ###################################
     
 @app.route('/get/', methods=['POST'])
 def get_tasks():
@@ -204,11 +224,6 @@ def del_cal():
     else:
         print ("WARNING: user not found")
     return ""
-
-@app.route('/signup/', methods=['GET'])
-def signup():
-    id = db.generateUser()
-    return json.dumps({"id": id}, indent=4, sort_keys=True, default=str)
 
 
 if __name__ == '__main__':
