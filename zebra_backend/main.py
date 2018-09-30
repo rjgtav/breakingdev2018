@@ -55,10 +55,12 @@ def ep_hello():
     return app.send_static_file('index.html')
     #return 'Hello, World!'
 
-@app.route('/<path:filename>')
-def serve_static(filename):
+@app.route('/<name>.js')
+def serve_static(path):
+    print("AAAA")
     root_dir = os.path.dirname(os.getcwd())
-    return send_from_directory(os.path.join(root_dir, 'static', 'js'), filename)
+    print(os.path.join(root_dir, 'static', 'js'))
+    return send_from_directory(os.path.join(root_dir, 'static', 'js'), path)
 
 
 @app.errorhandler(404)
